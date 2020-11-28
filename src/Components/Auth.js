@@ -1,16 +1,34 @@
 import React, { useState, useEffect, createContext } from 'react'
 import app from "../Firebase/firebase"
+import { firestore } from '../Firebase/firebase'
 
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ children }) => {
     const [ currentUser, setCurrentUser ] = useState(null)
     const [ loading, setLoading ] = useState(true)
+    
+    const [ userData, setUserData ] = useState()
+
+    const userRef = firestore.collection("users")
 
     useEffect(() => {
         app
         .auth()
         .onAuthStateChanged((user)=>{
+            if(user){
+                userRef.doc(user.uid)
+                .onSnapshot((doc)=>{
+                    if(doc.data()){
+                        const userData = {
+                            uid: doc.data().uid,
+                            email: doc.data().email
+                        }
+
+                        setUserData(userData)
+                    }
+                })
+            }
             setCurrentUser(user)
             setTimeout(() => {
                 setLoading(false)
@@ -18,6 +36,11 @@ export const AuthProvider = ({ children }) => {
             
         })
     }, [loading])
+
+    useEffect(() => {
+        console.log(userData)
+        
+    }, [userData])
 
     if(loading){
         return(
@@ -30,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser }}>
+        <AuthContext.Provider value={{ currentUser, userData }}>
             {children}
         </AuthContext.Provider>
         

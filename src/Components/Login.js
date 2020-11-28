@@ -9,11 +9,11 @@ const Login = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault();
         
         try{
-            app
+            await app
             .auth()
             .signInWithEmailAndPassword( email, password)
             

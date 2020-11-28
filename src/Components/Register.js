@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { Redirect } from 'react-router'
-import app from "../Firebase/firebase"
+import app  from "../Firebase/firebase"
+
 import { AuthContext } from "./Auth"
+import { firestore } from '../Firebase/firebase'
 
 const Register = () => {
     const { currentUser } = useContext(AuthContext)
@@ -9,17 +11,34 @@ const Register = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
-    const handleRegister = (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault();
         
         try{
-            app
+            await app
             .auth()
             .createUserWithEmailAndPassword( email, password)
+            .then( async (result) => {
+                if( result ){
+                    const userRef = firestore.collection("users")
+                    .doc(result.user.uid)
+
+                    const doc = await userRef.get()
+                    if(!doc.data()) {
+                        await userRef.set({
+                            uid: result.user.uid,
+                            displayName: result.user.email.substring(0, email.lastIndexOf("@")),
+                            email: result.user.email,
+                            createed: new Date().valueOf(),
+                            role: "user"
+                        })
+                    }   
+                }
+            })
             
         }
         catch(error){
-            alert(error)
+            alert(error.message)
         }
         
     }
