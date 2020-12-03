@@ -9,16 +9,23 @@ import Login from "./Components/Login"
 import Register from "./Components/Register"
 import LoggedinRoute from "./Components/LoggedinRoute"
 
+import AdminRoute from "./Components/AdminRoute"
+import AdminPage from "./Components/AdminPage"
+
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <div>
-          <LoggedinRoute exact path="/" component={ Home } />
-          <LoggedinRoute exact path="/profile" component={ Profile } />
+          
+          <AdminRoute exact path="/admin" component={ AdminPage } />
 
+          <LoggedinRoute exact path="/profile" component={ Profile } />
+          <Route exact path="/" component={ Home } />
           <Route exact path="/login" component={ Login } />
           <Route exact path="/register" component={ Register } />
+
+          {/* <Route path="*" component={ Home } /> */}
         </div>
       </Router>
     </AuthProvider>

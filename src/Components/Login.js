@@ -9,6 +9,8 @@ const Login = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
+    const [ loading, setLoading ] = useState(true)
+
     const handleLogin = async (event) => {
         event.preventDefault();
         
@@ -16,16 +18,39 @@ const Login = () => {
             await app
             .auth()
             .signInWithEmailAndPassword( email, password)
-            
+            .then()
+            setLoading(true)
+
+            setTimeout(() => {
+                setLoading(false)
+            }, 2000)
         }
         catch(error){
             alert(error)
         }
-        
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000);
+    }, [])
 
     if( currentUser ){
         return <Redirect to="/" />
+    }
+
+    if ( loading ){
+        return(
+            <div style={{textAlign: "center", marginTop: "150px"}}>
+                <h1>
+                    <div className="spinner-border" role="status">
+                    </div>
+
+                    <div className="mt-5">Loading . . . . (Login)</div>
+                </h1>
+            </div>
+        )
     }
 
     return (
@@ -55,8 +80,8 @@ const Login = () => {
                
             </form>
             <button className="mt-3 btn btn-info" >
-                <a href="/register" style={{textDecoration: "none"}}>
-                Register
+                <a href="/register" className="text-light" style={{textDecoration: "none"}}>
+                Register 
                 </a>
             </button>
         </div>

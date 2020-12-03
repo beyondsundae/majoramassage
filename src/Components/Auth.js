@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }) => {
                     if(doc.data()){
                         const userData = {
                             uid: doc.data().uid,
-                            email: doc.data().email
+                            email: doc.data().email,
+                            role: doc.data().role
                         }
-
                         setUserData(userData)
                     }
                 })
@@ -37,16 +37,11 @@ export const AuthProvider = ({ children }) => {
         })
     }, [loading])
 
-    useEffect(() => {
-        console.log(userData)
-        
-    }, [userData])
-
     if(loading){
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
                 <h1>
-                    Loading . . .
+                    Loading . . . (Auth)
                 </h1>
             </div>
         )
