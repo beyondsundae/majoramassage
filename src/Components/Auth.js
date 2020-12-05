@@ -20,12 +20,15 @@ export const AuthProvider = ({ children }) => {
                 userRef.doc(user.uid)
                 .onSnapshot((doc)=>{
                     if(doc.data()){
-                        const userData = {
-                            uid: doc.data().uid,
-                            email: doc.data().email,
-                            role: doc.data().role
-                        }
-                        setUserData(userData)
+                        const objDoc =  doc.data()
+                        // console.log(objDoc)
+                        // const userData = {
+                        //     uid: doc.data().uid,
+                        //     email: doc.data().email,
+                        //     role: doc.data().role,
+
+                        // }
+                        setUserData(objDoc)
                     }
                 })
             }

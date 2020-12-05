@@ -1,22 +1,56 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+
 import app from "../Firebase/firebase"
+import { firestore } from '../Firebase/firebase'
+
 import { AuthContext } from "./Auth"
 
 function Home() {
     const { currentUser, userData } = useContext(AuthContext)
 
+    const [ snapshot, setSnapshot ] = useState([])
+
     const Style = {
         Header: {
             height: "7vh"
         },
+        preContent: {
+            height: "30vh"
+        },
         Content: {
-            height: "92vh"
+            height: "62vh"
         }
     }
 
     useEffect(() => {
-        console.log(userData)
-        console.log(currentUser)
+        // console.log(userData) 
+        // console.log(currentUser)
+        // console.log(snapshot)
+    }, [snapshot])
+
+    useEffect(() => {
+        const getEmployees = firestore
+        .collection("users")
+        .where("role", "==", "employee")
+        
+        getEmployees.onSnapshot((snapshot) => {
+           
+            let tempArr = [] 
+            snapshot.forEach((doc) => {
+                // console.log(doc.data())
+                tempArr = [
+                    ...tempArr,
+                    {
+                        displayName: doc.data().displayName
+                    }
+                ]
+            })
+            setSnapshot(tempArr)
+        })
+
+        // return () => {
+        //     getEmployees()
+        // }
     }, [])
     
     return (
@@ -35,6 +69,12 @@ function Home() {
                         <button className="mt-3 mr-3 btn btn-warning " >
                             <a href="#" className="text-dark" style={{textDecoration: "none"}}>
                                 การจองของคุณ
+                            </a>
+                        </button>
+
+                        <button className="mt-3 mr-3 btn btn-primary " >
+                            <a href="/profile" className="text-dark" style={{textDecoration: "none"}}>
+                                Profile
                             </a>
                         </button>
                     </div>
@@ -59,9 +99,21 @@ function Home() {
                 
             
 
+            <div className="container-fluid mt-1 border border-danger" style={Style.preContent}>
+                xxxx
+            </div>
+
             <div className="container-fluid mt-1 border border-danger" style={Style.Content}>
-                xxx
-                {/* <img src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/emp_pics%2FIMG_1580.jpg?alt=media&token=13800d5f-b223-4a05-917d-9dff36c80582"/> */}
+                xxxx
+
+                {snapshot.map((item, index) => {
+                    return(
+                        <div className="card" key={index}> 
+                            {item.displayName}
+                        </div>
+                    )
+
+                })}
             </div>
 
         </div>

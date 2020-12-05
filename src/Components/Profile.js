@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import app from "../Firebase/firebase"
 import { storage } from "../Firebase/firebase"
+import { firestore } from '../Firebase/firebase'
 import { AuthContext } from "./Auth"
 
 
@@ -11,14 +12,7 @@ function Profile() {
 
     const [ loadingPic, setLoadingPic ] = useState("true")
 
-    const  getPic  =  storage.child("employee/" + currentUser.uid + "/ProfilePic.jpg")
-        .getDownloadURL()
-        .then((url) => {
-            setPic(url)
-        // This can be inserted into an <img> tag
-      }).catch((err) => {
-        console.log(err)
-      });
+    const [ changeDName, setchangeDName ] = useState("")
 
     const tempPic = () => {
         setTimeout(() => {
@@ -26,9 +20,51 @@ function Profile() {
         }, 1000);
     }
 
+    const handleChangeDName =  (e) => {
+        setchangeDName(e.target.value)
+    }
+
+    const submitNewName = async (e) => {
+        e.preventDefault();
+        console.log(changeDName)
+        try{
+
+            const userRef = firestore
+            .collection("users")
+            .doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+            // console.log(objDoc)
+
+           const obj = {
+               ...objDoc,
+               displayName: changeDName
+           }
+
+            userRef.set(obj)
+        } catch(err) {
+            console.log(err)
+        }
+        
+
+        setchangeDName('')
+    }
+
     useEffect(() => {
-      console.log(currentUser.email)
-      console.log(pic)
+    //   console.log(currentUser.email)
+    //   console.log(pic)
+
+      if(userData.role){
+        storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
+        .getDownloadURL()
+        .then((url) => {
+            setPic(url)
+        // This can be inserted into an <img> tag
+      }).catch((err) => {
+        console.log(err)
+      });
+    } 
       
       tempPic()
     }, [])
@@ -52,10 +88,16 @@ function Profile() {
             </button>
             <h1>Data Firestore</h1>
             <h2>uid: { userData? userData.uid : null }</h2>
-            <h2>displayName: { userData? currentUser.email.substring(0, currentUser.email.lastIndexOf("@")) : null}</h2>
+            <h2>displayName: { userData? userData.displayName : null}</h2>
             <h2>email: { userData? userData.email : null}</h2>
             <h2>role: { userData? userData.role : null}</h2>
             <br/>
+
+            <form onSubmit={(e) => submitNewName(e)}>
+                <input type="text" value={changeDName} onChange={(e) => handleChangeDName(e)} placeholder="New Name" />
+                <button className=" btn btn-success" type='submit'> Submit</button>
+
+            </form>
             <button className="btn btn-danger" onClick={() => {app.auth().signOut()}}>Log Out</button>
         </div>
     )

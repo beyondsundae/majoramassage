@@ -14,9 +14,8 @@ function AdminPage() {
 
     const [ loadingPic, setLoadingPic ] = useState("true")
     const [ progress, setProgress ] = useState(false)
-    const [ spinner, setSpinner ] = useState("")
 
-    const upPicRef = storage.child("employee/" + currentUser.uid )
+    const upPicRef = storage.child(userData.role + "/" + currentUser.uid )
 
     const tempPic = () => {
         setTimeout(() => {
@@ -44,7 +43,7 @@ function AdminPage() {
             uploadTask.on(
                 "state_changed",
 
-                setSpinner(""),
+                () => {},
 
                 (error) => {
                     console.log(error)
@@ -78,7 +77,7 @@ function AdminPage() {
         }
     }
 
-    storage.child("employee/" + currentUser.uid + "/ProfilePic.jpg")
+    storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
         .getDownloadURL()
         .then((url) => {
             setPic(url)
@@ -130,7 +129,6 @@ function AdminPage() {
                                 setLink("")
                             }}
                         />
-
 
                         <label 
                             className="custom-file-label"
