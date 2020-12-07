@@ -6,9 +6,7 @@ import { firestore } from '../Firebase/firebase'
 import { AuthContext } from "./Auth"
 
 function Home() {
-    const { currentUser, userData } = useContext(AuthContext)
-
-    const [ snapshot, setSnapshot ] = useState([])
+    const { currentUser, userData, allEmployees } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -23,34 +21,7 @@ function Home() {
     }
 
     useEffect(() => {
-        // console.log(userData) 
-        // console.log(currentUser)
-        // console.log(snapshot)
-    }, [snapshot])
-
-    useEffect(() => {
-        const getEmployees = firestore
-        .collection("users")
-        .where("role", "==", "employee")
-        
-        getEmployees.onSnapshot((snapshot) => {
-           
-            let tempArr = [] 
-            snapshot.forEach((doc) => {
-                // console.log(doc.data())
-                tempArr = [
-                    ...tempArr,
-                    {
-                        displayName: doc.data().displayName
-                    }
-                ]
-            })
-            setSnapshot(tempArr)
-        })
-
-        // return () => {
-        //     getEmployees()
-        // }
+        // console.log("loggedInUser:", userData) 
     }, [])
     
     return (
@@ -103,37 +74,27 @@ function Home() {
                 xxxx
             </div>
 
-            <div className="container-fluid mt-1 border border-danger" style={Style.Content}>
-                xxxx
-
-                {snapshot.map((item, index) => {
+            <div className="container-fluid mt-1 text-center border border-danger" style={Style.Content}>
+                <div className="row text-center"> 
+                {allEmployees.map((item, index) => {
                     return(
-                        <div className="card" key={index}> 
-                            {item.displayName}
+                        <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} key={index}> 
+                            {item.urlPhoto ? (
+                                <img className="card-img-top" src={item.urlPhoto} />
+                            ) : (
+                                <img className="card-img-top" src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
+
+                            )}
+                            <div className="card-body">
+                                <h5 className="card-title">{item.displayName}</h5>
+                            </div>
                         </div>
                     )
 
                 })}
+                 </div>   
             </div>
-
         </div>
-
-        // <div style={{textAlign: "center", marginTop: "150px"}}>
-        //     <h1>Hi</h1>
-        //     <h2>{currentUser? currentUser.email: "ยังไม่ได้เข้าสู่ระบบ"}</h2>
-        //     <br/>
-
-        //     {currentUser? (
-        //         <button className="btn btn-danger" onClick={() => {app.auth().signOut()}}>Sign out</button>
-        //     ) : (
-        //         <button className="mt-3 btn btn-info " >
-        //             <a href="/login" className="text-light" style={{textDecoration: "none"}}>
-        //                 Login
-        //             </a>
-        //         </button>
-        //     )}
-            
-        // </div>
     )
 }
 

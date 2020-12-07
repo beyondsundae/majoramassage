@@ -29,9 +29,7 @@ function Profile() {
         console.log(changeDName)
         try{
 
-            const userRef = firestore
-            .collection("users")
-            .doc(userData.uid)
+            const userRef = firestore.collection("users").doc(userData.uid)
 
             const getDoc = await userRef.get()
             const objDoc = await getDoc.data()
@@ -43,6 +41,7 @@ function Profile() {
            }
 
             userRef.set(obj)
+
         } catch(err) {
             console.log(err)
         }

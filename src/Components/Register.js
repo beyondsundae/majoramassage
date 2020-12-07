@@ -32,16 +32,32 @@ const Register = ( {history} ) => {
     
                         const doc = await userRef.get()
                         if(!doc.data()) {
-                            await userRef.set({
-                                uid: result.user.uid,
-                                displayName: result.user.email
-                                    .substring(0, email.lastIndexOf("@")),
-                                email: result.user.email,
-                                createed: new Date().valueOf(),
-                                role: role
-                            })
-                            
+                            if( role == "member"){
+                                await userRef.set({
+                                    uid: result.user.uid,
+                                    displayName: result.user.email
+                                        .substring(0, email.lastIndexOf("@")),
+                                    email: result.user.email,
+                                    createed: new Date().valueOf(),
+                                    role: role
+                                })
                             setLoading(true)
+
+                            } else if ( role == "employee"){
+                                    await userRef.set({
+                                        uid: result.user.uid,
+                                        displayName: result.user.email
+                                            .substring(0, email.lastIndexOf("@")),
+                                        email: result.user.email,
+                                        createed: new Date().valueOf(),
+                                        role: role,
+                                        age: 0,
+                                        star: 0,
+                                        listMassage:[],
+                                        queue:[]
+                                    })
+                                setLoading(true)
+                            }
                         }
                     }
                 })
@@ -62,7 +78,7 @@ const Register = ( {history} ) => {
                     alert(error.message)
                 }
             }
-        }
+        } 
         
     }
 

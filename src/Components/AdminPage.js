@@ -2,6 +2,7 @@ import { findByRole } from '@testing-library/react'
 import React, { useContext, useEffect, useState } from 'react'
 import app from "../Firebase/firebase"
 import { storage } from "../Firebase/firebase"
+import { firestore } from '../Firebase/firebase'
 import { AuthContext } from "./Auth"
 
 function AdminPage() {
@@ -33,13 +34,20 @@ function AdminPage() {
         tempPic()
     }, [])
 
-    const handleUpload = (e) =>{
+    const handleUpload = async (e) =>{
         e.preventDefault()
         if(file){
             const fileName = "ProfilePic.jpg";
             const targetRef = upPicRef.child(fileName)
             const uploadTask = targetRef.put(file)
+
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
             setProgress(true)
+
             uploadTask.on(
                 "state_changed",
 
@@ -51,13 +59,23 @@ function AdminPage() {
 
                 () => {
                     setProgress(false)
+
                     uploadTask
                     .snapshot
                     .ref
                     .getDownloadURL()
                     .then(( photoURL ) => {
                         setLink(photoURL)
+
+                        const obj = {
+                            ...objDoc,
+                            urlPhoto: photoURL
+                        }
+    
+                        userRef
+                        .set(obj)
                     })
+                    
                 }
             )
             // targetRef

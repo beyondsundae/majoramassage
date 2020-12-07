@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [ loading, setLoading ] = useState(true)
     
     const [ userData, setUserData ] = useState()
+    const [ allEmployees, setallEmployees ] = useState([])
 
     const userRef = firestore.collection("users")
 
@@ -40,6 +41,29 @@ export const AuthProvider = ({ children }) => {
         })
     }, [loading])
 
+    useEffect(() => {
+        const getEmployees = firestore
+        .collection("users")
+        .where("role", "==", "employee")
+        
+        getEmployees.onSnapshot((snapshot) => {
+            let tempArr = [] 
+            snapshot.forEach((doc) => {
+                // console.log(doc.data())
+                tempArr = [ ...tempArr, doc.data() ]
+                // get from collection must foreach before use them T__T remember remember
+            })
+            
+            setallEmployees(tempArr)
+        })
+
+    }, [])
+
+    useEffect(() => {
+        // console.group("fromResponse", currentUser)
+        // console.log(allEmployees)
+    }, [allEmployees])
+
     if(loading){
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
@@ -51,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser, userData }}>
+        <AuthContext.Provider value={{ currentUser, userData, allEmployees }}>
             {children}
         </AuthContext.Provider>
         
