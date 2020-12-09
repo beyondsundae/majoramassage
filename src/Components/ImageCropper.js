@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { getCroppedImg } from './cropImage'
 
-const ImageCropper = ({ getBlob, inputImg }) => {
+const ImageCropper = ({ getBlob, inputImg64 }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
 
     const onCropComplete = async (_, croppedAreaPixels) => {
         // console.log(croppedAreaPixels)
         const croppedImage = await getCroppedImg(
-            inputImg,
+            inputImg64,
             croppedAreaPixels
         )
         getBlob(croppedImage)
@@ -21,9 +21,10 @@ const ImageCropper = ({ getBlob, inputImg }) => {
     to prevent cropper taking up whole page */
         <div className='cropper' style={{position: "relative", height: "500px"}}> 
             <Cropper
-                image={inputImg}
+                image={inputImg64}
                 crop={crop}
                 zoom={zoom}
+                showGrid={false}
                 aspect={4 / 3}
                 onCropChange={setCrop}
                 onCropComplete={onCropComplete}

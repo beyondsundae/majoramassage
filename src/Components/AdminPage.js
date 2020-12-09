@@ -4,19 +4,25 @@ import app, { firestore, storage } from "../Firebase/firebase"
 
 import ImageCropper from './ImageCropper'
 
+import { Modal, Button } from 'antd';
+
+
 import { AuthContext } from "./Auth"
 
 function AdminPage() {
     const { currentUser, userData } = useContext(AuthContext)
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [statusButt, setstatusButt] = useState({ disabled: false });
 
     const [pic, setPic] = useState("")
 
     const [ file, setFile ] = useState("")
 
     const [blob, setBlob] = useState(null)
-    const [inputImg, setInputImg] = useState('')
+    const [inputImg64, setinputImg64] = useState('')
 
-    const [ loadingPic, setLoadingPic ] = useState("true")
+    const [ loadingPic, setLoadingPic ] = useState(true)
     const [ progress, setProgress ] = useState(false)
 
     const upPicRef = storage.child(userData.role + "/" + currentUser.uid )
@@ -34,19 +40,23 @@ function AdminPage() {
 
     const onInputChange = (e) => {
         // convert image file to base64 string
+
         const file = e.target.files[0]
+       
         setFile(file)
 
         const reader = new FileReader()
 
         reader.onload = () => {
-            setInputImg(reader.result)
+            setinputImg64(reader.result)
             // รูปที่ encode เป็น base64 แล้ว
         }
 
         if (file) {
             reader.readAsDataURL(file)
-        }
+            setIsModalVisible(true);
+        } 
+    
     }
 
     const handleSubmitImage = async (e) => {
@@ -62,19 +72,18 @@ function AdminPage() {
             const objDoc = await getDoc.data()
 
             setProgress(true)
+            setstatusButt({ disabled: true })
 
             uploadTask.on(
                 "state_changed", 
 
-                " ",
+                ()=>{},
 
                 (error) => {
                     console.log(error)
                 },
 
                 () => {
-                    setProgress(false)
-                    setInputImg("")
                     setFile("")
 
                     uploadTask
@@ -89,6 +98,16 @@ function AdminPage() {
     
                         userRef
                         .set(obj)
+
+                        setTimeout(() => {
+                            setinputImg64("")
+
+                            setIsModalVisible(false); 
+                            setProgress(false)
+                            setstatusButt({ disabled: false })
+                        }, 2000);
+                            
+                        
                     })
                     
                 }
@@ -97,6 +116,19 @@ function AdminPage() {
             console.log("no upload")
         }
     }
+
+    const showModal = () => {
+        setIsModalVisible(true);
+      };
+    
+      const handleOk = () => {
+        setIsModalVisible(false);
+      };
+    
+      const handleCancel = () => {
+        setIsModalVisible(false);
+        // setFile("")
+      };
 
     // useEffect(() => {
     //     // console.log(currentUser)
@@ -162,30 +194,33 @@ function AdminPage() {
                             {!file? <div>Browse Pic</div> : <div>{file.name}</div>}
                         </label>
                     </div>
-
-                        {
-                            inputImg ? (
-                            <ImageCropper getBlob={getBlob} inputImg={inputImg}/> 
-                            ) : (
-                                null
-                            )
-                        }
-
-                    <div>
-                        <button 
-                            type="submit"
-                            onClick={ handleSubmitImage }
-                            className="btn btn-success my-5">
-                                upload
-                            </button><br/>
-
-                            {progress ? (
-                                <div className="spinner-border" role="status">
-                                {/* <span className="sr-only">Loading...</span> */}
-                              </div>
-                            ) : null}
-                    </div>
                 </form>
+                
+                <Modal
+                    title="Crop Image"
+                    visible={isModalVisible}
+                    onOk={(e)=>handleSubmitImage(e)}
+                    onCancel={handleCancel}
+                    closable={false}
+                    okButtonProps={ statusButt }
+                    cancelButtonProps={ statusButt }
+                >
+                    {inputImg64 ? (
+                        <ImageCropper getBlob={getBlob} inputImg64={inputImg64}/> 
+                        ) : (
+                            null
+                        )
+                    }
+                    
+                    {progress ? (
+                        <div className="text-center">
+                            <div className="spinner-border mt-5 my-3" role="status"/><br/>
+                            <span className="">Uploading...</span>
+                        </div>
+                        
+                    ) : null}
+                </Modal>
+
              </div>
         </div>
     )
