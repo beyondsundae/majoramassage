@@ -1,8 +1,9 @@
-import { findByRole } from '@testing-library/react'
 import React, { useContext, useEffect, useState } from 'react'
-import app from "../Firebase/firebase"
-import { storage } from "../Firebase/firebase"
-import { firestore } from '../Firebase/firebase'
+
+import app, { firestore, storage } from "../Firebase/firebase"
+
+import ImageCropper from './ImageCropper'
+
 import { AuthContext } from "./Auth"
 
 function AdminPage() {
@@ -11,7 +12,9 @@ function AdminPage() {
     const [pic, setPic] = useState("")
 
     const [ file, setFile ] = useState("")
-    const [ link, setLink ] = useState("")
+
+    const [blob, setBlob] = useState(null)
+    const [inputImg, setInputImg] = useState('')
 
     const [ loadingPic, setLoadingPic ] = useState("true")
     const [ progress, setProgress ] = useState(false)
@@ -24,22 +27,34 @@ function AdminPage() {
         }, 1000);
     }
 
-    useEffect(() => {
-        // console.log(currentUser)
-        // console.log(userData)
-        console.log(file)
-    }, [file])
+    const getBlob = (blob) => {
+        // blob คือ ตัวไฟล์รูป ข้อมูลไฟล์รูปที่ได้มาจาก children 
+        setBlob(blob)
+    }
 
-    useEffect(() => {
-        tempPic()
-    }, [])
+    const onInputChange = (e) => {
+        // convert image file to base64 string
+        const file = e.target.files[0]
+        setFile(file)
 
-    const handleUpload = async (e) =>{
+        const reader = new FileReader()
+
+        reader.onload = () => {
+            setInputImg(reader.result)
+            // รูปที่ encode เป็น base64 แล้ว
+        }
+
+        if (file) {
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleSubmitImage = async (e) => {
         e.preventDefault()
-        if(file){
+        if( file ) {
             const fileName = "ProfilePic.jpg";
             const targetRef = upPicRef.child(fileName)
-            const uploadTask = targetRef.put(file)
+            const uploadTask = targetRef.put(blob, { contentType: blob.type })
 
             const userRef = firestore.collection("users").doc(userData.uid)
 
@@ -49,9 +64,9 @@ function AdminPage() {
             setProgress(true)
 
             uploadTask.on(
-                "state_changed",
+                "state_changed", 
 
-                () => {},
+                " ",
 
                 (error) => {
                     console.log(error)
@@ -59,14 +74,14 @@ function AdminPage() {
 
                 () => {
                     setProgress(false)
+                    setInputImg("")
+                    setFile("")
 
                     uploadTask
                     .snapshot
                     .ref
                     .getDownloadURL()
                     .then(( photoURL ) => {
-                        setLink(photoURL)
-
                         const obj = {
                             ...objDoc,
                             urlPhoto: photoURL
@@ -78,22 +93,20 @@ function AdminPage() {
                     
                 }
             )
-            // targetRef
-            // .put(file)
-            // .then((res)=>{
-            //     console.log(res)
-            //         res
-            //         .ref
-            //         .getDownloadURL()
-            //         .then((photoURL) => {
-            //             console.log(photoURL)
-            //             setLink(photoURL)
-            //         })
-            // })
         } else{
             console.log("no upload")
         }
     }
+
+    // useEffect(() => {
+    //     // console.log(currentUser)
+    //     // console.log(userData)
+    //     console.log(file)
+    // }, [file])
+
+    useEffect(() => {
+        tempPic()
+    }, [])
 
     storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
         .getDownloadURL()
@@ -125,7 +138,6 @@ function AdminPage() {
              </div>
 
              <div className="container-fluid mt-1 border border-danger" style={Style.Content}>
-                 <div>Test get pic from storage </div>
                  {pic ? (
                     loadingPic ? null : ( <img src={pic} style={{width: "20%"}} />) 
                 )  
@@ -141,24 +153,28 @@ function AdminPage() {
                             className="custom-file-input"
                             id="customFile"
                             accept="image/*"
-                            onChange={(e)=>{
-                                const file = e.target.files[0]
-                                setFile(file)
-                                setLink("")
-                            }}
+                            onChange={ onInputChange }
                         />
 
                         <label 
-                            className="custom-file-label"
+                            className="custom-file-label w-50 ml-5"
                             htmlFor="custpmFile">
                             {!file? <div>Browse Pic</div> : <div>{file.name}</div>}
                         </label>
                     </div>
 
+                        {
+                            inputImg ? (
+                            <ImageCropper getBlob={getBlob} inputImg={inputImg}/> 
+                            ) : (
+                                null
+                            )
+                        }
+
                     <div>
                         <button 
                             type="submit"
-                            onClick={handleUpload}
+                            onClick={ handleSubmitImage }
                             className="btn btn-success my-5">
                                 upload
                             </button><br/>
@@ -170,17 +186,6 @@ function AdminPage() {
                             ) : null}
                     </div>
                 </form>
-
-                {/* {link? (
-                    <div>
-                        <hr/>
-                        <img src={link} style={{width: "20%"}}/><br/>
-                        <a href={link}>
-                            Click {file.name}
-                        </a>
-                    </div>)
-                    : null
-            } */}
              </div>
         </div>
     )

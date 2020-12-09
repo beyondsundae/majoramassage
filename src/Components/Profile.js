@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import app from "../Firebase/firebase"
-import { storage } from "../Firebase/firebase"
-import { firestore } from '../Firebase/firebase'
+
+import app, { firestore, storage } from "../Firebase/firebase"
+
 import { AuthContext } from "./Auth"
 
 
@@ -26,7 +26,9 @@ function Profile() {
 
     const submitNewName = async (e) => {
         e.preventDefault();
-        console.log(changeDName)
+        
+        // console.log(changeDName)
+
         try{
 
             const userRef = firestore.collection("users").doc(userData.uid)
@@ -39,14 +41,12 @@ function Profile() {
                ...objDoc,
                displayName: changeDName
            }
-
             userRef.set(obj)
 
         } catch(err) {
             console.log(err)
-        }
-        
 
+        }
         setchangeDName('')
     }
 

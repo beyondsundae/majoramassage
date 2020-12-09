@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import app from "../Firebase/firebase"
-import { firestore } from '../Firebase/firebase'
+import app, { firestore } from '../Firebase/firebase'
 
 import { AuthContext } from "./Auth"
 
@@ -16,7 +15,8 @@ function Home() {
             height: "30vh"
         },
         Content: {
-            height: "62vh"
+            height: "62vh",
+            
         }
     }
 
@@ -78,7 +78,8 @@ function Home() {
                 <div className="row text-center"> 
                 {allEmployees.map((item, index) => {
                     return(
-                        <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} key={index}> 
+                        <a href={item.createed} key={index}>
+                             <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
                             {item.urlPhoto ? (
                                 <img className="card-img-top" src={item.urlPhoto} />
                             ) : (
@@ -86,9 +87,11 @@ function Home() {
 
                             )}
                             <div className="card-body">
-                                <h5 className="card-title">{item.displayName}</h5>
+                                <h5 className="card-title">น้อง{item.displayName}</h5>
                             </div>
                         </div>
+                        </a>
+                       
                     )
 
                 })}

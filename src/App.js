@@ -38,7 +38,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    console.log(allEmployees)
+    // console.log(allEmployees)
   }, [allEmployees])
 
   return (
@@ -53,14 +53,14 @@ const App = () => {
           <Route exact path="/login" component={ Login } />
           <Route exact path="/register" component={ Register } />
 
+
           {allEmployees.map((item, index) => {
-            // console.log(item.createed)
+            console.log(item.createed)
             
            return <Route exact key={index} path={"/" + item.createed} render={() => <Information allEmployees={ item } />} />
           })}
           
 
-          {/* <Route path="*" component={ Home } /> */}
         </div>
       </Router>
     </AuthProvider>
