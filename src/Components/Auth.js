@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext } from 'react'
 import app from "../Firebase/firebase"
 import { firestore } from '../Firebase/firebase'
 
+import { Modal, Button } from 'antd';
+
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ children }) => {
@@ -75,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ currentUser, userData, allEmployees }}>
+        <AuthContext.Provider value={{ currentUser, userData, allEmployees, Modal }}>
             {children}
         </AuthContext.Provider>
         

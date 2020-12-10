@@ -25,7 +25,7 @@ const ImageCropper = ({ getBlob, inputImg64 }) => {
                 crop={crop}
                 zoom={zoom}
                 showGrid={false}
-                aspect={4 / 3}
+                aspect={3 / 3.5}
                 onCropChange={setCrop}
                 onCropComplete={onCropComplete}
                 onZoomChange={setZoom}

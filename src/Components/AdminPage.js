@@ -2,15 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
+import Header from "./Parts/Header"
+
 import ImageCropper from './ImageCropper'
 
-import { Modal, Button } from 'antd';
 
 
 import { AuthContext } from "./Auth"
 
 function AdminPage() {
-    const { currentUser, userData } = useContext(AuthContext)
+    const { currentUser, userData, Modal } = useContext(AuthContext)
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [statusButt, setstatusButt] = useState({ disabled: false });
