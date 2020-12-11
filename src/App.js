@@ -33,11 +33,10 @@ const App = () => {
             // get from collection must foreach before use them T__T remember remember
         })
 
-        console.log( tempArr )
+        // console.log( tempArr )
         
         setAllEmployees(tempArr)
     })
-
   }, [])
 
 
