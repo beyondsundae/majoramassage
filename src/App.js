@@ -59,8 +59,7 @@ const App = () => {
 
 
           {allEmployees.map((item, index) => {
-            console.log(item.createed)
-            
+            // console.log(item.createed)
            return <Route exact key={index} path={"/em/" + item.createed} render={() => <Information allEmployees={ item } />} />
           })}
           

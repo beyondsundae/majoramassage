@@ -51,60 +51,37 @@ function MassageList() {
         })
 
         setindividiList(userData.listMassage)
-    }, [])
+
+        //ติดตาม userData เพราะเวลาอัพเดทค่าจะได้มา trig useEffect นี้ทำงาน
+    }, [userData])
 
     //แจกข้อมูลไป 2 ส่วน :อันดับสอง
     useEffect(() => {
-        // console.log(allMassageLitsts)
-        // console.log(individiList)
 
-        let tempArr = []
-        let tempArr2 = []
+        //Show AllList which not occur in IndividualList (เอาเฉพาะ AllList ที่ไม่มีใน IndividualList)
+        let finalAll = allMassageLitsts.filter(All => {
+            return !individiList.some(Indivi => Indivi.id === All.id)})
+        // console.log("AllLeft", finalAll)
 
-        //When employee have empty list
-        setfinalAllMassageLitsts(allMassageLitsts) //When employee no list return all lists
+            setfinalAllMassageLitsts(finalAll)
 
-        //When employee have list
-        allMassageLitsts.forEach((e1)=>{individiList.forEach((e2)=>{
-            if(e1.id === e2.id){
-                // console.log("individual",e1) 
-                tempArr2 = [ ...tempArr2, e1 ] //Return what employee list's have
-                setfinalIndividiList(tempArr2)
-            } 
-            
-        })})
+        //Show IndividualList which not occur in AllList (เอาเฉพาะ IndividualList ที่มีใน AllList) (จริงๆไม่ได้มีก็ได้เพราะ แค่เอา List ของ พนักงานมาแสดง =____=)
+        let finalIndivi = allMassageLitsts.filter(All => {
+            return individiList.some(Indivi => Indivi.id === All.id)})
+        // console.log("IndiviLeft", finalIndivi)
+
+            setfinalIndividiList(finalIndivi)
 
     }, [allMassageLitsts])
 
-     //แจกข้อมูลไป 2 ส่วน :อันดับสอง
-     useEffect(() => {
-        // console.log(allMassageLitsts)
-        // console.log(individiList)
-
-        let tempArr = []
-        let tempArr2 = []
-
-        //When employee have empty list
-        setfinalAllMassageLitsts(allMassageLitsts) //When employee no list return all lists
-
-        //When employee have list
-        allMassageLitsts.forEach((e1)=>{individiList.forEach((e2)=>{
-            
-            if (e1.id !== e2.id) {
-                tempArr = [ ...tempArr, e1 ] //Return what all list left 
-                setfinalAllMassageLitsts(tempArr)
-                console.log("AllLeft", tempArr)
-            }
-        })})
-
-    }, [allMassageLitsts])
 
     useEffect(() => {
+        
         console.log(finalAllMassageLitsts)
         console.log(finalIndividiList)
     }, [finalAllMassageLitsts, finalIndividiList])
 
-    const AddData = async ( text ) => {
+    const AddData = async ( Selected ) => {
         try{
 
             const userRef = firestore.collection("users").doc(userData.uid)
@@ -115,12 +92,36 @@ function MassageList() {
 
             let tempArr = []
 
-            tempArr = [ ...finalIndividiList, text ]
-            console.log(tempArr)
+            tempArr = [ ...finalIndividiList, Selected ] //ตบข้อมูลเก่ามา พร้อมยัดข้อมูลใหม่เข้าไปด้วย Put prevData and newData together 
+            // console.log(tempArr)
 
             const obj = {
                 ...objDoc,
                 listMassage: tempArr
+            }
+            userRef.set(obj) 
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const DeleteData = async ( Selected ) => {
+        try{
+
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
+           
+            let finalDelete = finalIndividiList.filter(Indivi => {
+                return ![Selected].some(SelectedList => SelectedList.id === Indivi.id)
+            }) //Different : Return finalIndividiList ที่ไม่มี Selected 
+
+            const obj = {
+                ...objDoc,
+                listMassage: finalDelete
             }
             userRef.set(obj)
 
@@ -180,7 +181,7 @@ function MassageList() {
                                 key="action"
                                 render={(text, record) => (
                                     <Space size="middle">
-                                        <a style={{color: "red"}} onClick={() => { console.log()}}>ลบ</a>
+                                        <a style={{color: "red"}} onClick={() => { DeleteData(text)}}>ลบ</a>
                                     </Space>
                                 )}
                                 />
