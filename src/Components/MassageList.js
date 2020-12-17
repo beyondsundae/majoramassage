@@ -3,6 +3,7 @@ import React, { useEffect, useContext, useState } from 'react'
 import app, { firestore, storage } from "../Firebase/firebase"
 
 import { Table, Space, Divider } from "antd";
+// import { difference, intersection } from 'lodash';
 
 import Header from "./Parts/Header"
 
@@ -58,14 +59,14 @@ function MassageList() {
     //แจกข้อมูลไป 2 ส่วน :อันดับสอง
     useEffect(() => {
 
-        //Show AllList which not occur in IndividualList (เอาเฉพาะ AllList ที่ไม่มีใน IndividualList)
+        //Show AllList which not occur in IndividualList (เอาเฉพาะ AllList ที่ไม่มีใน IndividualList) (Different)
         let finalAll = allMassageLitsts.filter(All => {
             return !individiList.some(Indivi => Indivi.id === All.id)})
         // console.log("AllLeft", finalAll)
 
             setfinalAllMassageLitsts(finalAll)
 
-        //Show IndividualList which not occur in AllList (เอาเฉพาะ IndividualList ที่มีใน AllList) (จริงๆไม่ได้มีก็ได้เพราะ แค่เอา List ของ พนักงานมาแสดง =____=)
+        //Show IndividualList which not occur in AllList (เอาเฉพาะ IndividualList ที่มีใน AllList) (จริงๆไม่ได้มีก็ได้เพราะ แค่เอา List ของ พนักงานมาแสดง =____=) (Intersection)
         let finalIndivi = allMassageLitsts.filter(All => {
             return individiList.some(Indivi => Indivi.id === All.id)})
         // console.log("IndiviLeft", finalIndivi)
@@ -76,9 +77,8 @@ function MassageList() {
 
 
     useEffect(() => {
-        
-        console.log(finalAllMassageLitsts)
-        console.log(finalIndividiList)
+        // console.log(finalAllMassageLitsts)
+        // console.log(finalIndividiList)
     }, [finalAllMassageLitsts, finalIndividiList])
 
     const AddData = async ( Selected ) => {
@@ -118,6 +118,8 @@ function MassageList() {
             let finalDelete = finalIndividiList.filter(Indivi => {
                 return ![Selected].some(SelectedList => SelectedList.id === Indivi.id)
             }) //Different : Return finalIndividiList ที่ไม่มี Selected 
+
+            // let Diff = _.difference(finalIndividiList, [Selected]) // Lodash version
 
             const obj = {
                 ...objDoc,

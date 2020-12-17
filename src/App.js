@@ -11,10 +11,12 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Information from "./Components/Information";
 import MassageList from './Components/MassageList'
-import LoggedinRoute from "./Components/LoggedinRoute";
+import LoggedinRoute from "./Components/Routes/LoggedinRoute";
 
-import AdminRoute from "./Components/AdminRoute";
+import AdminRoute from "./Components/Routes/AdminRoute";
 import AdminPage from "./Components/AdminPage";
+
+import EmployeeRoute from './Components//Routes/EmployeeRoute';
 
 const App = () => {
   const [ allEmployees, setAllEmployees ] = useState([])
@@ -52,7 +54,8 @@ const App = () => {
           <AdminRoute exact path="/admin" component={ AdminPage } />
 
           <LoggedinRoute exact path="/profile" component={ Profile } />
-          <LoggedinRoute exact path="/masssagelists" component={ MassageList } />
+          
+          <EmployeeRoute exact path="/masssagelists" component={ MassageList } />
           <Route exact path="/" component={ Home } />
           <Route exact path="/login" component={ Login } />
           <Route exact path="/register" component={ Register } />

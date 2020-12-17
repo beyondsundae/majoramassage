@@ -39,7 +39,8 @@ const Register = ( {history} ) => {
                                         .substring(0, email.lastIndexOf("@")),
                                     email: result.user.email,
                                     createed: new Date().valueOf(),
-                                    role: role
+                                    role: role,
+                                    queue: []
                                 })
                             setLoading(true)
 

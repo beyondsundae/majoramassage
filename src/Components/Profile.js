@@ -123,22 +123,25 @@ function Profile() {
                 <h2>{currentUser.email}</h2><br/>
                 <button className="mt-3 btn btn-info" >
                     <a href="/admin" className="text-light" style={{textDecoration: "none"}}>
-                    Admin 
+                    เปลี่ยนรูป 
+                    </a>
+                </button><br></br>
+                <button className="mt-3 btn btn-warning" >
+                    <a href="/masssagelists" className="text-light" style={{textDecoration: "none"}}>
+                    จัดการรายการนวด 
                     </a>
                 </button>
+
+                <form onSubmit={(e) => showModal(e)}>
+                    <button className=" btn btn-success my-3" type='submit'>เปลี่ยนชื่อ</button>
+                </form>
+
                 <h1>Data Firestore</h1>
                 <h2>uid: { userData? userData.uid : null }</h2>
                 <h2>displayName: { userData? userData.displayName : null}</h2>
                 <h2>email: { userData? userData.email : null}</h2>
                 <h2>role: { userData? userData.role : null}</h2>
                 <br/>
-
-                <form onSubmit={(e) => showModal(e)}>
-                    
-                    <button className=" btn btn-success my-5" type='submit'>เปลี่ยนชื่อ</button>
-
-                </form>
-                <button className="btn btn-danger" onClick={() => {app.auth().signOut()}}>Log Out</button>
 
                 <Modal
                     title="Change Name"

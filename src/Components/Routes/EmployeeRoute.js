@@ -1,17 +1,15 @@
 import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { AuthContext } from "./Auth";
+import { AuthContext } from "../Auth";
 
-const AdminRoute = ({ component: RouteComponent, ...rest }) => {
+const EmployeeRoute = ({ component: RouteComponent, ...rest }) => {
   const {currentUser, userData} = useContext(AuthContext);
   return (
     <Route
       {...rest}
       render={routeProps => 
         !!currentUser ? ( 
-          userData.role 
-              // == "admin" || "member"
-              ? ( 
+          userData.role == "employee"? ( 
               <RouteComponent {...routeProps} /> 
             )
             : ( 
@@ -26,4 +24,4 @@ const AdminRoute = ({ component: RouteComponent, ...rest }) => {
 };
 
 
-export default AdminRoute
+export default EmployeeRoute

@@ -11,7 +11,7 @@ function Header() {
         <div className="row">
                     <div className="col align-self-end">
                             <h2 className="d-inline border border-danger ">
-                                {userData? ("น้อง " + userData.displayName): "ยังไม่ได้เข้าสู่ระบบ"}
+                                {userData? ( userData.role == "employee" ? ("น้อง " + userData.displayName) : ("คุณ " + userData.displayName)): "ยังไม่ได้เข้าสู่ระบบ"}
                             </h2>
                         </div>
 
