@@ -10,7 +10,7 @@ import { List, Avatar, DatePicker, Space, Select, Button } from 'antd';
 import { AuthContext } from "./Auth"
 
 function Information( {allEmployees} ) {
-    const { Option } = Select;
+    const { Option, OptGroup } = Select;
     
     const [ status, setStatus ] = useState(true)
 
@@ -89,12 +89,25 @@ function Information( {allEmployees} ) {
                     queue:[ ...objDocUser.queue,
                     {
                         ChiropactorName: allEmployees.displayName,
+                        ChiropactorPic: allEmployees.urlPhoto,
                         id: listItem.id,
                         name: listItem.name,
                         price: listItem.price,
                         status: "NotDone",
                         Date: date,
                         Time: time,
+                        Review: {
+                            Stars: {
+                                Cuteness: null,
+                                BodyShape: null,
+                                BodySkin: null,
+                                Massage: null,
+                                Friendly: null
+                            },
+                            totalStar: null,
+                            Comment: "",
+                            Reviewer: userData.displayName
+                        }
                     }
                     ]}
     
@@ -109,12 +122,25 @@ function Information( {allEmployees} ) {
                     queue:[...objDocChiropactor.queue,
                     {
                         MemberName: userData.displayName,
+                        MemberPic: userData.urlPhoto,
                         id: listItem.id,
                         name: listItem.name,
                         price: listItem.price,
                         status: "NotDone",
                         Date: date,
                         Time: time,
+                        Review: {
+                            Stars: {
+                                Cuteness: null,
+                                BodyShape: null,
+                                BodySkin: null,
+                                Massage: null,
+                                Friendly: null
+                            },
+                            totalStar: null,
+                            Comment: "",
+                            Reviewer: userData.displayName
+                        }
                     }
                     ]}
     
@@ -127,6 +153,7 @@ function Information( {allEmployees} ) {
                         setIsModalVisible(false);
                         setProgress(false)
                         setstatusButt({ disabled: false })
+                        window.location.reload();
                     }, 2000);
     
             } catch (err) {
@@ -254,25 +281,30 @@ function Information( {allEmployees} ) {
                     style={{ width: 120 }}
                     onChange={onChangeTime}
                 >
+                    <OptGroup label="ช่วงบ่าย">
+                        <Option key="15:00" disabled={ queue.find(item => item.Date === date && item.Time === "15:00"? (true) : (false)) }>15:00</Option>
+                        <Option key="16:00" disabled={ queue.find(item => item.Date === date && item.Time === "16:00"? (true) : (false)) }>16:00</Option>
+                        <Option key="17:00" disabled={ queue.find(item => item.Date === date && item.Time === "17:00"? (true) : (false)) }>17:00</Option>
+                    </OptGroup>
+                    
+                    <OptGroup label="ช่วงค่ำ">
+                        <Option key="19:00" disabled={ 
+                            //เอา Arr คิวของหมอนวดมาคุ้ยหา ว่ามีวันที่และเวลาตรงกับที่เลือกใน Pickdate มั้ย ถ้ามีก็ให้ Disable ถ้าไม่ก็ ให้เลือกได้ (ยังหาวิํธีแบบ Dynamic ไม่่ได้ T______T ) 
+                            queue.find(item => { 
+                                //แบบ Short
+                                return item.Date === date && item.Time === "19:00"? (true) : (false)
 
-                    <Option key="19:00" disabled={ 
-                        //เอา Arr คิวของหมอนวดมาคุ้ยหา ว่ามีวันที่และเวลาตรงกับที่เลือกใน Pickdate มั้ย ถ้ามีก็ให้ Disable ถ้าไม่ก็ ให้เลือกได้ (ยังหาวิํธีแบบ Dynamic ไม่่ได้ T______T ) 
-                        queue.find(item => { 
-                            //แบบ Short
-                            return item.Date === date && item.Time === "19:00"? (true) : (false)
-
-                            // แบบ Full (เพื่อความเข้าใจ)
-                            // if(item.Date === date && item.Time === "19:00" )return true
-                            // else return false    
-                        }) 
-                        }>19:00</Option>
-                    <Option key="20:00" disabled={ queue.find(item => item.Date === date && item.Time === "20:00"? (true) : (false)) }>20:00</Option>
-                    <Option key="21:00" disabled={ queue.find(item => item.Date === date && item.Time === "21:00"? (true) : (false)) }>21:00</Option>
-                    <Option key="22:00" disabled={ queue.find(item => item.Date === date && item.Time === "22:00"? (true) : (false)) }>22:00</Option>
-                    <Option key="23:00" disabled={ queue.find(item => item.Date === date && item.Time === "23:00"? (true) : (false)) }>23:00</Option>
-                    <Option key="00:00" disabled={ queue.find(item => item.Date === date && item.Time === "00:00"? (true) : (false)) }>00:00</Option>
-                    <Option key="01:00" disabled={ queue.find(item => item.Date === date && item.Time === "01:00"? (true) : (false)) }>01:00</Option>
-                    <Option key="02:00" disabled={ queue.find(item => item.Date === date && item.Time === "02:00"? (true) : (false)) }>02:00</Option>
+                                // แบบ Full (เพื่อความเข้าใจ)
+                                // if(item.Date === date && item.Time === "19:00" )return true
+                                // else return false    
+                            }) }>19:00</Option>
+                        <Option key="20:00" disabled={ queue.find(item => item.Date === date && item.Time === "20:00"? (true) : (false)) }>20:00</Option>
+                        <Option key="21:00" disabled={ queue.find(item => item.Date === date && item.Time === "21:00"? (true) : (false)) }>21:00</Option>
+                        <Option key="22:00" disabled={ queue.find(item => item.Date === date && item.Time === "22:00"? (true) : (false)) }>22:00</Option>
+                        <Option key="23:00" disabled={ queue.find(item => item.Date === date && item.Time === "23:00"? (true) : (false)) }>23:00</Option>
+                    </OptGroup>
+                    
+                    
                     
                 </Select>
                         

@@ -40,6 +40,7 @@ const Register = ( {history} ) => {
                                     email: result.user.email,
                                     createed: new Date().valueOf(),
                                     role: role,
+                                    urlPhoto: "https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png",
                                     queue: []
                                 })
                             setLoading(true)
@@ -52,6 +53,7 @@ const Register = ( {history} ) => {
                                         email: result.user.email,
                                         createed: new Date().valueOf(),
                                         role: role,
+                                        urlPhoto: "https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png",
                                         age: 0,
                                         star: 0,
                                         listMassage:[],

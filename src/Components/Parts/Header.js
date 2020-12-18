@@ -17,7 +17,7 @@ function Header() {
 
                         <div className="align-self-end">
                             <button className="mt-3 mr-3 btn btn-warning " >
-                                <a href="#" className="text-dark" style={{textDecoration: "none"}}>
+                                <a href="/booking" className="text-dark" style={{textDecoration: "none"}}>
                                     การจองของคุณ
                                 </a>
                             </button>

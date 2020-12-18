@@ -11,6 +11,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Information from "./Components/Information";
 import MassageList from './Components/MassageList'
+import Booking from "./Components/Booking";
 import LoggedinRoute from "./Components/Routes/LoggedinRoute";
 
 import AdminRoute from "./Components/Routes/AdminRoute";
@@ -54,6 +55,7 @@ const App = () => {
           <AdminRoute exact path="/admin" component={ AdminPage } />
 
           <LoggedinRoute exact path="/profile" component={ Profile } />
+          <LoggedinRoute exact path="/booking" component={ Booking } />
           
           <EmployeeRoute exact path="/masssagelists" component={ MassageList } />
           <Route exact path="/" component={ Home } />
