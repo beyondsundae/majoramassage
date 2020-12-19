@@ -13,7 +13,8 @@ function Booking() {
     const { currentUser, userData, Modal } = useContext(AuthContext)
 
     const [ page, setPage ] = useState("1")
-
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    
     const { confirm } = Modal;
     const { TabPane } = Tabs;
 
@@ -76,10 +77,10 @@ function Booking() {
     const setAction = async (item, Decision) => {
 
         const userRef = firestore.collection("users").doc(userData.uid) //ใช้ uid เพื่ออิงถึง doc
-        const chiropractorRef = firestore.collection("users").doc(item.ChiropactorKey) //ใช้ uid เพื่ออิงถึง doc
+        const memberRef = firestore.collection("users").doc(item.MemberKey) //ใช้ uid เพื่ออิงถึง doc
 
         try{
-{/* //////////////////////  For Member */}    
+{/* //////////////////////  For Employee */}    
             const getDocUser = await userRef.get()
             const objDocUser = await getDocUser.data()
 
@@ -105,30 +106,54 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            // await userRef.set(objUser)
+            await userRef.set(objUser)
 
-{/* //////////////////////  For Chiropactor */}    
-            const getDocChiropactor = await chiropractorRef.get()
-            const objDocChiropactor = await getDocChiropactor.data()
+{/* //////////////////////  For Member */}    
+            const getDocMember = await memberRef.get()
+            const objDocMember = await getDocMember.data()
 
-            let DifferentQueue2 = objDocChiropactor.queue.filter(QueueOld => {
+            let DifferentQueue2 = objDocMember.queue.filter(QueueOld => {
                 return ![item].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
             }) //Different : Return QueueOld ที่ไม่มี SelectedItem 
 
-            let RejectObj2 = {}
-            RejectObj2 = {
-                ...item,
-                status: Decision=="Reject"? "Reject" : "Done"
-                // status: "NotDone"
-            }
+            let IntersectionQueue2 = objDocMember.queue.filter(QueueOld => {
+                return [item].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
+            }) //Intersection : Return เฉพาะ QueueOld ที่มี SelectedItem ได้กลับมาเป็น Obj in Arr
+
+
+
+            IntersectionQueue2.forEach(element => {
+                let RejectObj2 = {}
+                RejectObj2 = {
+                    ...element,
+                    status: Decision=="Reject"? "Reject" : "Done"
+                    // status: "NotDone"
+                }
+
+                let finalQueue2 = [...DifferentQueue2, RejectObj2]
+
+                const objUser2 = {...objDocMember,
+                    queue:[ ...finalQueue2
+                    ]}
+                
+                 memberRef.set(objUser2)
+
+                console.log(objUser2)
+            });
+
             
-            let finalQueue2 = [...DifferentQueue2, RejectObj2]
+            
+            // let finalQueue2 = [...DifferentQueue2, RejectObj2]
 
-            const objUser2 = {...objDocChiropactor,
-                queue:[ ...finalQueue2
-                ]}
+            // const objUser2 = {...objDocMember,
+            //     queue:[ ...finalQueue2
+            //     ]}
 
-        //    await chiropractorRef.set(objUser2)
+        //    await memberRef.set(objUser2)
+
+                // console.log(objUser)
+                // console.log(finalIntersectionQueue2)
+
 
             if(Decision!=="Reject"){
                 setPage("2")
@@ -139,7 +164,7 @@ function Booking() {
         }
     }
 
-{/* //////////////////////  For Chiropactor */}   
+{/* //////////////////////  For RateStars */}   
     const RateStars = () => {
 
     }
@@ -208,7 +233,7 @@ function Booking() {
                                         </Button>
                                     </>
                                 ):(item.status !== "Reject"&&userData.role == "member"?(
-                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>onAction(item, Done)} style={{background: "#00caac", border: "1px solid transparent"}}>
+                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ showModal } style={{background: "#00caac", border: "1px solid transparent"}}>
                                         ให้คะแนน
                                     </Button>
                                 ):(null)
@@ -220,6 +245,19 @@ function Booking() {
             )
         )
     }
+
+    {/* //////////////////////  Modal Controller */}
+    const showModal = () => {
+        setIsModalVisible(true);
+      };
+    
+      const handleOk = () => {
+        setIsModalVisible(false);
+      };
+    
+      const handleCancel = () => {
+        setIsModalVisible(false);
+      };
 
     useEffect(() => {
         // console.log()
@@ -252,6 +290,13 @@ function Booking() {
                     </TabPane>
                 </Tabs>
             </div>
+
+{/* //////////////////////  Modal RatingStars */}    
+        <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+        </Modal>
         </div>
     )
 }

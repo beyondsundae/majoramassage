@@ -126,6 +126,7 @@ function Information( {allEmployees} ) {
                     {
                         MemberName: userData.displayName,
                         MemberPic: userData.urlPhoto,
+                        MemberKey: userData.uid,
                         createed: created,
                         id: listItem.id,
                         name: listItem.name,
