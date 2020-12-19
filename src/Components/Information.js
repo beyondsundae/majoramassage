@@ -84,12 +84,15 @@ function Information( {allEmployees} ) {
                 // For Member
                 const getDocUser = await userRef.get()
                 const objDocUser = await getDocUser.data()
+                const created = new Date().valueOf()
     
                 const objUser = {...objDocUser,
                     queue:[ ...objDocUser.queue,
                     {
                         ChiropactorName: allEmployees.displayName,
                         ChiropactorPic: allEmployees.urlPhoto,
+                        ChiropactorKey: allEmployees.uid,
+                        createed: created,
                         id: listItem.id,
                         name: listItem.name,
                         price: listItem.price,
@@ -111,7 +114,7 @@ function Information( {allEmployees} ) {
                     }
                     ]}
     
-                userRef.set(objUser)
+              await userRef.set(objUser)
     
                 // For Chiropactor
                 const getDocChiropactor = await chiropractorRef.get()
@@ -123,6 +126,7 @@ function Information( {allEmployees} ) {
                     {
                         MemberName: userData.displayName,
                         MemberPic: userData.urlPhoto,
+                        createed: created,
                         id: listItem.id,
                         name: listItem.name,
                         price: listItem.price,
@@ -144,7 +148,7 @@ function Information( {allEmployees} ) {
                     }
                     ]}
     
-                    chiropractorRef.set(objChiropactor)
+                 await   chiropractorRef.set(objChiropactor)
     
                     setTimeout(() => {
                         setDate('')
@@ -154,7 +158,7 @@ function Information( {allEmployees} ) {
                         setProgress(false)
                         setstatusButt({ disabled: false })
                         window.location.reload();
-                    }, 2000);
+                    }, 500);
     
             } catch (err) {
                 console.log(err)
