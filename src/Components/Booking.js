@@ -76,8 +76,9 @@ function Booking() {
 {/* ////////////////////// Action Function */}
     const setAction = async (item, Decision) => {
 
-        const userRef = firestore.collection("users").doc(userData.uid) //ใช้ uid เพื่ออิงถึง doc
-        const memberRef = firestore.collection("users").doc(item.MemberKey) //ใช้ uid เพื่ออิงถึง doc
+        //เอาไว้สับขาหลอกสำหรับ user ทั้ง member และ employee เพื่อจะได้ไม่ต้องเขียนเยอะ
+        const userRef = firestore.collection("users").doc(userData !== "member"? userData.uid : (Decision === "Reject"? (userData !== "member"? (item.MemberKey) : (item.ChiropactorKey)) : (item.MemberKey))) //ใช้ uid เพื่ออิงถึง doc
+        const memberRef = firestore.collection("users").doc(userData !== "member"? userData.uid : (Decision === "Reject"? (userData !== "member"? (item.MemberKey) : (item.ChiropactorKey)) : (item.MemberKey))) //ใช้ uid เพื่ออิงถึง doc
 
         try{
 {/* //////////////////////  For Employee */}    
@@ -106,7 +107,8 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            await userRef.set(objUser)
+            // await userRef.set(objUser)
+            console.log(objUser)
 
 {/* //////////////////////  For Member */}    
             const getDocMember = await memberRef.get()
@@ -119,8 +121,6 @@ function Booking() {
             let IntersectionQueue2 = objDocMember.queue.filter(QueueOld => {
                 return [item].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
             }) //Intersection : Return เฉพาะ QueueOld ที่มี SelectedItem ได้กลับมาเป็น Obj in Arr
-
-
 
             IntersectionQueue2.forEach(element => {
                 let RejectObj2 = {}
@@ -136,24 +136,10 @@ function Booking() {
                     queue:[ ...finalQueue2
                     ]}
                 
-                 memberRef.set(objUser2)
+                //  memberRef.set(objUser2)
 
                 console.log(objUser2)
             });
-
-            
-            
-            // let finalQueue2 = [...DifferentQueue2, RejectObj2]
-
-            // const objUser2 = {...objDocMember,
-            //     queue:[ ...finalQueue2
-            //     ]}
-
-        //    await memberRef.set(objUser2)
-
-                // console.log(objUser)
-                // console.log(finalIntersectionQueue2)
-
 
             if(Decision!=="Reject"){
                 setPage("2")
