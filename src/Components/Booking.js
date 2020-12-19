@@ -2,20 +2,30 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
-import { Card, Button, Radio  } from "antd";
-import { ExclamationCircleTwoTone } from '@ant-design/icons';
+import { Card, Button, Tabs, Empty } from "antd";
+import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 import Header from "./Parts/Header"
 
 import { AuthContext } from "./Auth"
-import { Fragment } from 'react';
 
 var _ = require('lodash');
 function Booking() {
     const { currentUser, userData, Modal } = useContext(AuthContext)
 
+    const [ page, setPage ] = useState("1")
+
     const { confirm } = Modal;
+    const { TabPane } = Tabs;
+
+    const Reject = "Reject"
+    const Done = "Done"
 
     const QueueOrdered = _.orderBy(userData.queue, ["Date", "Time"], ["asc", "asc"])
+
+    const FilterByNotDone = _.filter(QueueOrdered, ['status', "NotDone"]);
+    const FilterByReject = _.filter(QueueOrdered, ['status', "Reject"]);
+    const FilterByDone = _.filter(QueueOrdered, ['status', "Done"]);
+
 
     const Style = {
         Header: {
@@ -26,21 +36,35 @@ function Booking() {
         // },
         Content: {
             minHeight: "92vh"
+        },
+        CardOverflow: {
+            width: "100%", 
+            height: "80vh", 
+            margin:"0px", 
+            overflow: "auto"
         }
     }
-{/* ////////////////////// Modal Reject */}
-    const onReject = (item) => {
+{/* ////////////////////// Modal Action */}
+    const onAction = (item, Decision) => {
         confirm({
-            title: (<h4>ต้องการ{<h2 style={{color: "red", display: "inline"}}>ยกเลิก</h2>}รายการนี้ใช่หรือไม่</h4>),
-            icon: (<ExclamationCircleTwoTone twoToneColor="red"/>),
+            title: (Decision=="Reject"?(
+                <h4>ต้องการ{<h2 style={{color: "red", display: "inline"}}>ยกเลิก</h2>}รายการนี้ใช่หรือไม่</h4>
+            ) : (
+                <h4>ต้องการ{<h2 style={{color: "#00caac", display: "inline"}}>ยืนยัน</h2>}รายการนี้ใช่หรือไม่</h4>
+                )),
+            icon: (Decision=="Reject"?(
+                <ExclamationCircleTwoTone twoToneColor="red"/>
+            ):(
+                <CheckCircleTwoTone twoToneColor="#00caac"/>
+            ) ),
             // content: 'Some descriptions',
-            okText: 'ยกเลิก',
-            okType: 'danger',
+            okText: (Decision=="Reject"?('ยกเลิก'):('ยืนยัน')),
+            okType: (Decision=="Reject"?('danger'):("#00caac")),
             width:'30%',
             cancelText: 'กลับไปก่อนหน้า',
            
             onOk() {
-                setReject(item)
+                (Decision=="Reject"? (setAction(item, Decision)):(setAction(item, Decision)))
             },
             onCancel() {
               console.log('Cancel');
@@ -48,8 +72,8 @@ function Booking() {
           });
     }
 
-{/* ////////////////////// Reject Function */}
-    const setReject = async (item) => {
+{/* ////////////////////// Action Function */}
+    const setAction = async (item, Decision) => {
 
         const userRef = firestore.collection("users").doc(userData.uid) //ใช้ uid เพื่ออิงถึง doc
         const chiropractorRef = firestore.collection("users").doc(item.ChiropactorKey) //ใช้ uid เพื่ออิงถึง doc
@@ -68,8 +92,8 @@ function Booking() {
             let RejectObj = {}
             RejectObj = {
                 ...item,
-                // status: "Reject"
-                status: "NotDone"
+                status: Decision=="Reject"? "Reject" : "Done"
+                // status: "NotDone"
             }
 
             // นำมา union กันกับ queue ที่เหลือ
@@ -81,7 +105,7 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            await userRef.set(objUser)
+            // await userRef.set(objUser)
 
 {/* //////////////////////  For Chiropactor */}    
             const getDocChiropactor = await chiropractorRef.get()
@@ -94,8 +118,8 @@ function Booking() {
             let RejectObj2 = {}
             RejectObj2 = {
                 ...item,
-                // status: "Reject"
-                status: "NotDone"
+                status: Decision=="Reject"? "Reject" : "Done"
+                // status: "NotDone"
             }
             
             let finalQueue2 = [...DifferentQueue2, RejectObj2]
@@ -104,26 +128,32 @@ function Booking() {
                 queue:[ ...finalQueue2
                 ]}
 
-           await chiropractorRef.set(objUser2)
+        //    await chiropractorRef.set(objUser2)
+
+            if(Decision!=="Reject"){
+                setPage("2")
+            }
             
         } catch (err) {
             console.log(err)
         }
     }
 
-    useEffect(() => {
-        // console.log(QueueOrdered)
-    }, [])
+{/* //////////////////////  For Chiropactor */}   
+    const RateStars = () => {
 
-    return (
-        <div>
-            <div className="container-fluid text-right border border-danger " style={Style.Header}>
-                <Header />
-            </div>
+    }
 
-            <div className="container-fluid mt-1 row justify-content-center text-center border border-danger" style={Style.Content}>
-                <div className="mt-5" style={{ width: "70%", height: "80vh", margin:"0px", overflow: "auto"}}>
-                    {QueueOrdered.map((item, index) => {
+{/* ////////////////////// return Card */}   
+    const CardOrder = (Filtered) => {
+        return(
+            Filtered.length == 0? (
+                <Empty
+                    description="ไม่มีการจอง"
+                    imageStyle={{height: "300px"}}
+                /> 
+            ) : (
+                Filtered.map((item, index) => {
                     return(
                         <Card
                             key={index}
@@ -133,14 +163,19 @@ function Booking() {
                             <div className="text-left mx-5">
                                 <div className="row">
                                     <div className="col">
-                                        <img src={item.ChiropactorPic} className="mx-5" style={{height: "150px"}} />
+                                        <img src={item.ChiropactorPic || item.MemberPic} className="mx-5" style={{height: "150px"}} />
                                     </div>
                                     <div className="col pt-3">
                                         <div className="col-12  ">
                                             <h3>{item.name}</h3>
                                         </div>
                                         <div className="col-12 ">
-                                            <h5>น้อง {item.ChiropactorName}</h5>
+                                            {userData.role !== "member"? (
+                                                <h5>คุณ {item.MemberName}</h5>
+                                            ):(
+                                                <h5>น้อง {item.ChiropactorName}</h5>
+                                            )}
+                                            
                                         </div>
                                     </div>
                                     <div className="col pt-3 text-right ">
@@ -159,22 +194,63 @@ function Booking() {
                                 <h3> ราคารวม: ฿{item.price}.00</h3>
                             </div>
                             <div className="text-right mt-5">
-                                {item.status}
-                                    <Button className="mr-3" type="primary" size="large" disabled={false} style={{background: "green"}}>
+                                {item.status == "NotDone"?(
+                                    //Logic แสดงปุ่มครับ เขียนโดยใช้ความรู้สึกความตั้งใจที่เต็มเปี่ยม
+                                    <>
+                                        {userData.role == "employee"?(
+                                            <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>onAction(item, Done)} style={{background: "#00caac", border: "1px solid transparent"}}>
+                                                ยืนยัน
+                                            </Button>
+                                        ):(null)
+                                        }
+                                        <Button className="mr-3" type="primary" danger size="large" onClick={()=>onAction(item, Reject)} style={{background: "#eb655b"}}>
+                                            ยกเลิก
+                                        </Button>
+                                    </>
+                                ):(item.status !== "Reject"&&userData.role == "member"?(
+                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>onAction(item, Done)} style={{background: "#00caac", border: "1px solid transparent"}}>
                                         ให้คะแนน
                                     </Button>
-                                    <Button className="mr-3" type="primary" danger size="large" onClick={()=>onReject(item)} >
-                                        ยกเลิก
-                                    </Button>
+                                ):(null)
+                                )}
                             </div>
-                        
                         </Card>
                     )
+                })
+            )
+        )
+    }
 
-                })}
-                </div>
-                
-                
+    useEffect(() => {
+        // console.log()
+    }, [])
+
+    return (
+        <div>
+            <div className="container-fluid text-right border border-danger " style={Style.Header}>
+                <Header />
+            </div>
+
+            <div className="container-fluid row justify-content-center text-center border border-danger" style={Style.Content}>
+
+{/* //////////////////////  Reuse Card map */}    
+                <Tabs activeKey={page} onChange={(activeKey) => setPage(activeKey)} size="large" className="my-4" style={{ width: "100vh" }}>
+                    <TabPane tab="รอการยืนยัน" key="1">
+                        <div className="" style={Style.CardOverflow}>
+                            {CardOrder (FilterByNotDone)}
+                        </div>
+                    </TabPane>
+                    <TabPane tab="สำเร็จ" key="2">
+                        <div className="" style={Style.CardOverflow}>
+                            {CardOrder (FilterByDone)}
+                        </div>
+                    </TabPane>
+                    <TabPane tab="ยกเลิก" key="3">
+                        <div className="" style={Style.CardOverflow}>
+                            {CardOrder (FilterByReject)}
+                        </div>
+                    </TabPane>
+                </Tabs>
             </div>
         </div>
     )
