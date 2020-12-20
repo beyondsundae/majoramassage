@@ -254,7 +254,7 @@ function Information( {allEmployees} ) {
 
 {/* ////////////////////// Modal */}
                 <Modal
-                    title="Change Name"
+                    title="เปลี่ยนชื่อ"
                     visible={isModalVisible}
                     onOk={(e)=>submiBooking(e)}
                     onCancel={()=>handleCancel()}

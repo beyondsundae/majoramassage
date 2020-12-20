@@ -2,11 +2,17 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
-import { Card, Button, Tabs, Empty } from "antd";
+import { Card, Button, Tabs, Empty, Divider } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
+
+import { withStyles } from "@material-ui/core/styles";
+import Rating from "@material-ui/lab/Rating";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+
 import Header from "./Parts/Header"
 
 import { AuthContext } from "./Auth"
+import { Stars } from '@material-ui/icons';
 
 var _ = require('lodash');
 function Booking() {
@@ -14,7 +20,23 @@ function Booking() {
 
     const [ page, setPage ] = useState("1")
     const [isModalVisible, setIsModalVisible] = useState(false);
-    
+    const [ info, setInfo ] = useState("")
+
+    const [value, setValue] = React.useState({
+        Review:{
+            Comment: "",
+            Reviewer: "",
+                Stars: {
+                    BodyShape: 0,
+                    BodySkin: 0,
+                    Cuteness: 0,
+                    Friendly: 0,
+                    Massage: 0,
+                },
+            totalStar: null
+        }
+    });
+
     const { confirm } = Modal;
     const { TabPane } = Tabs;
 
@@ -45,6 +67,15 @@ function Booking() {
             overflow: "auto"
         }
     }
+    const StyledRating = withStyles({
+        iconFilled: {
+          color: "#ff6d75"
+        },
+        iconHover: {
+          color: "#ff3d47"
+        }
+      })(Rating);
+
 {/* ////////////////////// Modal Action */}
     const onAction = (item, Decision) => {
         confirm({
@@ -219,7 +250,7 @@ function Booking() {
                                         </Button>
                                     </>
                                 ):(item.status !== "Reject"&&userData.role == "member"?(
-                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ showModal } style={{background: "#00caac", border: "1px solid transparent"}}>
+                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>showModal(item) } style={{background: "#00caac", border: "1px solid transparent"}}>
                                         ให้คะแนน
                                     </Button>
                                 ):(null)
@@ -233,8 +264,10 @@ function Booking() {
     }
 
     {/* //////////////////////  Modal Controller */}
-    const showModal = () => {
+    const showModal = (item) => {
         setIsModalVisible(true);
+        setInfo(item)
+        // console.log()
       };
     
       const handleOk = () => {
@@ -246,8 +279,8 @@ function Booking() {
       };
 
     useEffect(() => {
-        // console.log()
-    }, [])
+        console.log(value.Review.Stars)
+    }, [value])
 
     return (
         <div>
@@ -278,11 +311,98 @@ function Booking() {
             </div>
 
 {/* //////////////////////  Modal RatingStars */}    
-        <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-        </Modal>
+            <Modal 
+                title="การให้คะแนนของคุณ" 
+                visible={isModalVisible} 
+                onOk={handleOk} 
+                onCancel={handleCancel}
+                closable={false}
+                width="40%"
+            >
+                <div className="text-left ">
+                    <div className="row">
+                        <div className="col-4">
+                            <img src={info.ChiropactorPic || info.MemberPic} className="mx-5" style={{width: "150px"}} />
+                        </div>
+                        <div className="col-8 pt-3">
+                            <div className="col-12  ">
+                                <h3>{info.name}</h3>
+                            </div>
+                            <div className="col-12 ">
+                                {userData.role !== "member"? (
+                                    <h5>คุณ {info.MemberName}</h5>
+                                ):(
+                                    <h5>น้อง {info.ChiropactorName}</h5>
+                                )}
+                            </div>
+                        </div>
+                        <div className=" col-12 pt-3 text-right ">
+                            <div className="col-12  ">
+                                <h5>วันที่ {info.Date}</h5>
+                            </div>
+                            <div className="col-12">
+                                <h5>เวลา {info.Time}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="text-right">
+                                <h3> ราคารวม: ฿{info.price}.00</h3>
+                    </div>
+                    <Divider orientation="left">คะแนน</Divider>
+
+{/* //////////////////////  Rating Zone */} 
+                        <h5>หน้าตา: 
+                            <StyledRating
+                                size="large"
+                                value={value.Review.Stars.Cuteness}
+                                precision={1}
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                        Stars: {...value.Review.Stars, Cuteness: 0, },
+                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Cuteness: newValue}}})}}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                            /></h5> 
+                        <h5>รูปร่าง: 
+                            <StyledRating
+                                size="large"
+                                value={value.Review.Stars.BodyShape}
+                                precision={1}
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                        Stars: {...value.Review.Stars, BodyShape: 0, },
+                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, BodyShape: newValue}}})}}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                            /></h5> 
+                        <h5>ผิวพรรณ: 
+                            <StyledRating
+                                size="large"
+                                value={value.Review.Stars.BodySkin}
+                                precision={1}
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                        Stars: {...value.Review.Stars, BodySkin: 0, },
+                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, BodySkin: newValue}}})}}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                            /></h5> 
+                        <h5>งานนวด: 
+                            <StyledRating
+                                size="large"
+                                value={value.Review.Stars.Massage}
+                                precision={1}
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                        Stars: {...value.Review.Stars, Massage: 0, },
+                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Massage: newValue}}})}}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                            /></h5> 
+                        <h5>ความเป็นกันเอง: 
+                            <StyledRating
+                                size="large"
+                                value={value.Review.Stars.Friendly}
+                                precision={1}
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                        Stars: {...value.Review.Stars, Friendly: 0, },
+                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Friendly: newValue}}})}}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                            /></h5> 
+                </div>
+            </Modal>
         </div>
     )
 }
