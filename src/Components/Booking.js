@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
-import { Card, Button, Tabs, Empty, Divider } from "antd";
+import { Card, Button, Tabs, Empty, Divider, Input } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
@@ -12,15 +12,16 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import Header from "./Parts/Header"
 
 import { AuthContext } from "./Auth"
-import { Stars } from '@material-ui/icons';
+
 
 var _ = require('lodash');
 function Booking() {
     const { currentUser, userData, Modal } = useContext(AuthContext)
 
     const [ page, setPage ] = useState("1")
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [ isModalVisible, setIsModalVisible ] = useState(false);
     const [ info, setInfo ] = useState("")
+    const [ finalStars, setFinalStars ] = useState()
 
     const [value, setValue] = React.useState({
         Review:{
@@ -39,6 +40,7 @@ function Booking() {
 
     const { confirm } = Modal;
     const { TabPane } = Tabs;
+    const { TextArea } = Input;
 
     const Reject = "Reject"
     const Done = "Done"
@@ -106,10 +108,9 @@ function Booking() {
 
 {/* ////////////////////// Action Function */}
     const setAction = async (item, Decision) => {
-
-        //เอาไว้สับขาหลอกสำหรับ user ทั้ง member และ employee เพื่อจะได้ไม่ต้องเขียนเยอะ
-        const userRef = firestore.collection("users").doc(userData !== "member"? userData.uid : (Decision === "Reject"? (userData !== "member"? (item.MemberKey) : (item.ChiropactorKey)) : (item.MemberKey))) //ใช้ uid เพื่ออิงถึง doc
-        const memberRef = firestore.collection("users").doc(userData !== "member"? userData.uid : (Decision === "Reject"? (userData !== "member"? (item.MemberKey) : (item.ChiropactorKey)) : (item.MemberKey))) //ใช้ uid เพื่ออิงถึง doc
+        //เอาไว้สับขาหลอกสำหรับ user ทั้ง member และ employee ให้การเขียนข้อมูลลงไปขึ้นอยู่กับ role ของ user ที่ล็อคอินอยู่
+        const userRef = firestore.collection("users").doc(userData.role === "employee"? userData.uid: (Decision === "Reject"? userData.uid : null)) //ใช้ uid เพื่ออิงถึง doc
+        const user2Ref = firestore.collection("users").doc(userData.role === "employee"? item.MemberKey: (Decision === "Reject"? (item.ChiropactorKey) : null)) //ใช้ uid เพื่ออิงถึง doc
 
         try{
 {/* //////////////////////  For Employee */}    
@@ -126,7 +127,6 @@ function Booking() {
             RejectObj = {
                 ...item,
                 status: Decision=="Reject"? "Reject" : "Done"
-                // status: "NotDone"
             }
 
             // นำมา union กันกับ queue ที่เหลือ
@@ -139,17 +139,16 @@ function Booking() {
 
             // set ขื้นไป 
             // await userRef.set(objUser)
-            console.log(objUser)
 
 {/* //////////////////////  For Member */}    
-            const getDocMember = await memberRef.get()
-            const objDocMember = await getDocMember.data()
+            const getDocUser2 = await user2Ref.get()
+            const objDocUser2 = await getDocUser2.data()
 
-            let DifferentQueue2 = objDocMember.queue.filter(QueueOld => {
+            let DifferentQueue2 = objDocUser2.queue.filter(QueueOld => {
                 return ![item].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
             }) //Different : Return QueueOld ที่ไม่มี SelectedItem 
 
-            let IntersectionQueue2 = objDocMember.queue.filter(QueueOld => {
+            let IntersectionQueue2 = objDocUser2.queue.filter(QueueOld => {
                 return [item].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
             }) //Intersection : Return เฉพาะ QueueOld ที่มี SelectedItem ได้กลับมาเป็น Obj in Arr
 
@@ -158,19 +157,21 @@ function Booking() {
                 RejectObj2 = {
                     ...element,
                     status: Decision=="Reject"? "Reject" : "Done"
-                    // status: "NotDone"
                 }
 
                 let finalQueue2 = [...DifferentQueue2, RejectObj2]
 
-                const objUser2 = {...objDocMember,
+                const objUser2 = {...objDocUser2,
                     queue:[ ...finalQueue2
                     ]}
                 
-                //  memberRef.set(objUser2)
-
-                console.log(objUser2)
+                // user2Ref.set(objUser2)
+                // console.log(objUser)
+                
             });
+
+            // console.log(objDocUser)
+            // console.log(objDocUser2)
 
             if(Decision!=="Reject"){
                 setPage("2")
@@ -179,11 +180,6 @@ function Booking() {
         } catch (err) {
             console.log(err)
         }
-    }
-
-{/* //////////////////////  For RateStars */}   
-    const RateStars = () => {
-
     }
 
 {/* ////////////////////// return Card */}   
@@ -233,7 +229,7 @@ function Booking() {
                             // extra={<a href="#">More</a>}
                         >
                             <div className="text-right">
-                                <h3> ราคารวม: ฿{item.price}.00</h3>
+                                <h3> ค่าบริการ: ฿{item.price}.00</h3>
                             </div>
                             <div className="text-right mt-5">
                                 {item.status == "NotDone"?(
@@ -249,7 +245,7 @@ function Booking() {
                                             ยกเลิก
                                         </Button>
                                     </>
-                                ):(item.status !== "Reject"&&userData.role == "member"?(
+                                ):(item.status !== "Reject"&&userData.role == "member"&&item.Review.totalStar===null?(
                                     <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>showModal(item) } style={{background: "#00caac", border: "1px solid transparent"}}>
                                         ให้คะแนน
                                     </Button>
@@ -263,15 +259,94 @@ function Booking() {
         )
     }
 
-    {/* //////////////////////  Modal Controller */}
+{/* //////////////////////  Action Function*/}   
+    const setRateStars = async () => {
+        //เป็นการเอาข้อมูล Rating เขียนซ้อนไป ชายจะมีข้อมูลของหญิง หญิงจะมีข้อมูลของชาย ต้องสับขาเขียนทับ
+        const userRef = firestore.collection("users").doc(userData.uid) //ใช้ uid เพื่ออิงถึง doc
+        const user2Ref = firestore.collection("users").doc(info.ChiropactorKey) //ใช้ uid เพื่ออิงถึง doc
+
+        try{
+{/* //////////////////////  For Employee */}    
+            const getDocUser = await userRef.get()
+            const objDocUser = await getDocUser.data()
+
+            // เข้าถึง Queue เพื่อ Different queue ที่กดเลืือกออกไป
+            let DifferentQueue = objDocUser.queue.filter(QueueOld => {
+                return ![info].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
+            }) //Different : Return QueueOld ที่ไม่มี SelectedItem 
+
+            // สร้าง queueเดิมที่ถูกตัดออก ใหม่โดยเปลี่ยน status to Reject
+            let ReviewedObj = {}
+            ReviewedObj = {
+                ...info,
+                ...value
+            }
+
+            // นำมา union กันกับ queue ที่เหลือ
+            let finalQueue = [...DifferentQueue, ReviewedObj]
+
+            // ยัด finalQueue ลงไปใน Queue เพื่อรวมกับข้อมูลเก่าทั้งหมด 
+            const objUser = {...objDocUser,
+                queue:[ ...finalQueue
+                ]}
+
+            // set ขื้นไป 
+            await userRef.set(objUser)
+
+{/* //////////////////////  For Employee */}    
+            const getDocUser2 = await user2Ref.get()
+            const objDocUser2 = await getDocUser2.data()
+
+            let DifferentQueue2 = objDocUser2.queue.filter(QueueOld => {
+                return ![info].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
+            }) //Different : Return QueueOld ที่ไม่มี SelectedItem 
+
+            let IntersectionQueue2 = objDocUser2.queue.filter(QueueOld => {
+                return [info].some(SelectedItem => SelectedItem.createed === QueueOld.createed)
+            }) //Intersection : Return เฉพาะ QueueOld ที่มี SelectedItem ได้กลับมาเป็น Obj in Arr
+
+            IntersectionQueue2.forEach(element => {
+                // สร้าง queueเดิมที่ถูกตัดออก ใหม่โดยเปลี่ยน status to Reject
+                let ReviewedObj2 = {}
+                ReviewedObj2 = {
+                    ...element,
+                    ...value
+                }
+
+                let finalQueue2 = [...DifferentQueue2, ReviewedObj2]
+
+                const objUser2 = {...objDocUser2,
+                    queue:[ ...finalQueue2
+                    ]}
+                
+                user2Ref.set(objUser2)
+                // console.log(objUser)
+                // console.log(objUser2)
+                
+            });
+            
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
+
+{/* //////////////////////  Sum Stars */}
+useEffect(() => {
+    let sumStars = value.Review.Stars.BodyShape + value.Review.Stars.BodySkin + value.Review.Stars.Cuteness + value.Review.Stars.Friendly + value.Review.Stars.Massage
+    let finalStars = sumStars/5
+    setFinalStars(finalStars)
+}, [value])
+
+{/* //////////////////////  Modal Controller */}
     const showModal = (item) => {
         setIsModalVisible(true);
         setInfo(item)
-        // console.log()
       };
     
       const handleOk = () => {
         setIsModalVisible(false);
+        setRateStars()
       };
     
       const handleCancel = () => {
@@ -279,8 +354,8 @@ function Booking() {
       };
 
     useEffect(() => {
-        console.log(value.Review.Stars)
-    }, [value])
+        // console.log()
+    }, [])
 
     return (
         <div>
@@ -346,9 +421,11 @@ function Booking() {
                         </div>
                     </div>
                     <div className="text-right">
-                                <h3> ราคารวม: ฿{info.price}.00</h3>
+                            <h3> ค่าบริการ: ฿{info.price}.00</h3>
+                            *กรุณาชำระค่าบริการที่เคาเตอร์
                     </div>
-                    <Divider orientation="left">คะแนน</Divider>
+
+                    <Divider orientation="left"><h5>การรีวิวของคุณ</h5></Divider>
 
 {/* //////////////////////  Rating Zone */} 
                         <h5>หน้าตา: 
@@ -356,9 +433,9 @@ function Booking() {
                                 size="large"
                                 value={value.Review.Stars.Cuteness}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
                                         Stars: {...value.Review.Stars, Cuteness: 0, },
-                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Cuteness: newValue}}})}}
+                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, Cuteness: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
                         <h5>รูปร่าง: 
@@ -366,9 +443,9 @@ function Booking() {
                                 size="large"
                                 value={value.Review.Stars.BodyShape}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
                                         Stars: {...value.Review.Stars, BodyShape: 0, },
-                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, BodyShape: newValue}}})}}
+                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, BodyShape: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
                         <h5>ผิวพรรณ: 
@@ -376,9 +453,9 @@ function Booking() {
                                 size="large"
                                 value={value.Review.Stars.BodySkin}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
                                         Stars: {...value.Review.Stars, BodySkin: 0, },
-                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, BodySkin: newValue}}})}}
+                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, BodySkin: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
                         <h5>งานนวด: 
@@ -386,9 +463,9 @@ function Booking() {
                                 size="large"
                                 value={value.Review.Stars.Massage}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
                                         Stars: {...value.Review.Stars, Massage: 0, },
-                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Massage: newValue}}})}}
+                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, Massage: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
                         <h5>ความเป็นกันเอง: 
@@ -396,11 +473,18 @@ function Booking() {
                                 size="large"
                                 value={value.Review.Stars.Friendly}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review,
+                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
                                         Stars: {...value.Review.Stars, Friendly: 0, },
-                                }}) : setValue({Review:{...value.Review, Stars: { ...value.Review.Stars, Friendly: newValue}}})}}
+                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, Friendly: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
+
+                            <Divider orientation="center"><h5>คะแนนรวม: {finalStars} <FavoriteIcon style={{color: "#ff6d75"}}/></h5> </Divider>
+
+                    <h5 className="mt-5">ความคิดเห็นเพิ่มเติม</h5>
+                    <TextArea rows={4} value={value.Review.Comment} onChange={(e)=>setValue({Review:{...value.Review, Comment: e.target.value}})} />
+
+                    <h5 className="mt-5">ผู้รีวิว: {info? (info.Review.Reviewer):(null)}</h5>
                 </div>
             </Modal>
         </div>
