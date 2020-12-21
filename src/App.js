@@ -18,7 +18,6 @@ import AdminRoute from "./Components/Routes/AdminRoute";
 import AdminPage from "./Components/AdminPage";
 
 import EmployeeRoute from './Components//Routes/EmployeeRoute';
-
 const App = () => {
   const [ allEmployees, setAllEmployees ] = useState([])
 

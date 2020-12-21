@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
-import { Card, Button, Tabs, Empty, Divider, Input } from "antd";
+import { Card, Button, Tabs, Empty, Divider, Input, message } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
@@ -12,7 +12,6 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import Header from "./Parts/Header"
 
 import { AuthContext } from "./Auth"
-
 
 var _ = require('lodash');
 function Booking() {
@@ -46,10 +45,11 @@ function Booking() {
     const Done = "Done"
 
     const QueueOrdered = _.orderBy(userData.queue, ["Date", "Time"], ["asc", "asc"])
+    const QueueOrderedDESC =  _.orderBy(userData.queue, ["Date", "Time"], ["desc", "desc"])
 
     const FilterByNotDone = _.filter(QueueOrdered, ['status', "NotDone"]);
-    const FilterByReject = _.filter(QueueOrdered, ['status', "Reject"]);
-    const FilterByDone = _.filter(QueueOrdered, ['status', "Done"]);
+    const FilterByReject = _.filter(QueueOrderedDESC, ['status', "Reject"]);
+    const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"]);
 
 
     const Style = {
@@ -138,7 +138,7 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            // await userRef.set(objUser)
+            await userRef.set(objUser)
 
 {/* //////////////////////  For Member */}    
             const getDocUser2 = await user2Ref.get()
@@ -165,13 +165,11 @@ function Booking() {
                     queue:[ ...finalQueue2
                     ]}
                 
-                // user2Ref.set(objUser2)
-                // console.log(objUser)
-                
-            });
+                user2Ref.set(objUser2)
+                msgSuccess()
 
-            // console.log(objDocUser)
-            // console.log(objDocUser2)
+                // console.log(objUser)         
+            });
 
             if(Decision!=="Reject"){
                 setPage("2")
@@ -179,6 +177,7 @@ function Booking() {
             
         } catch (err) {
             console.log(err)
+            msgError(err)
         }
     }
 
@@ -246,10 +245,18 @@ function Booking() {
                                         </Button>
                                     </>
                                 ):(item.status !== "Reject"&&userData.role == "member"&&item.Review.totalStar===null?(
-                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>showModal(item) } style={{background: "#00caac", border: "1px solid transparent"}}>
+                                    <Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>showModal(item) } style={{background: "#ff85c0", border: "1px solid transparent"}}>
                                         ให้คะแนน
                                     </Button>
-                                ):(null)
+                                ):(item.status !== "Reject"&&item.Review.totalStar===null?(
+                                    <Button disabled className="mr-3" type="primary" size="large" >
+                                        รอการรีวิว
+                                    </Button>
+                                        ):(item.status !== "Reject"?(<Button className="mr-3" type="primary" size="large"  disabled={false} onClick={ ()=>SeeMyReview(item)} style={{background: "#108ee9", border: "1px solid transparent"}}>
+                                        ดูคะแนน
+                                    </Button>):(null)
+                                    )
+                                )
                                 )}
                             </div>
                         </Card>
@@ -258,6 +265,62 @@ function Booking() {
             )
         )
     }
+
+    function SeeMyReview(item) {
+        Modal.info({
+          title: 'คะแนนที่รีวิว',
+          content: (
+            <div >
+              <h5>หน้าตา: 
+                    <StyledRating
+                        size="large"
+                        value={item.Review.Stars.Cuteness}
+                        icon={<FavoriteIcon fontSize="inherit" />}
+                        readOnly
+                    /></h5> 
+                <h5>รูปร่าง: 
+                    <StyledRating
+                        size="large"
+                        value={item.Review.Stars.BodyShape}
+                        icon={<FavoriteIcon fontSize="inherit" />}
+                        readOnly
+                    /></h5> 
+                <h5>ผิวพรรณ: 
+                    <StyledRating
+                        size="large"
+                        value={item.Review.Stars.BodySkin}
+                        icon={<FavoriteIcon fontSize="inherit" />}
+                        readOnly
+                    /></h5> 
+                <h5>งานนวด: 
+                    <StyledRating
+                        size="large"
+                        value={item.Review.Stars.Massage}
+                        icon={<FavoriteIcon fontSize="inherit" />}
+                        readOnly
+                    /></h5> 
+                <h5>ความเป็นกันเอง: 
+                    <StyledRating
+                        size="large"
+                        value={item.Review.Stars.Friendly}
+                        icon={<FavoriteIcon fontSize="inherit" />}
+                        readOnly
+                    /></h5> 
+
+                    <Divider orientation="center"><h5>คะแนนรวม: {item.Review.totalStar} <FavoriteIcon style={{color: "#ff6d75"}}/></h5> </Divider>
+
+                <h5 className="mt-5">ความคิดเห็นเพิ่มเติม</h5>
+                    <Card  style={{ width: 300 }}>
+                        {item.Review.Comment}
+                    </Card>
+
+                <h5 className="mt-5">ผู้รีวิว: {item? (item.Review.Reviewer):(null)}</h5>
+            </div>
+          ),
+          onOk() {},
+        });
+      }
+      
 
 {/* //////////////////////  Action Function*/}   
     const setRateStars = async () => {
@@ -291,7 +354,7 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            await userRef.set(objUser)
+            // await userRef.set(objUser)
 
 {/* //////////////////////  For Employee */}    
             const getDocUser2 = await user2Ref.get()
@@ -320,15 +383,36 @@ function Booking() {
                     ]}
                 
                 user2Ref.set(objUser2)
-                // console.log(objUser)
-                // console.log(objUser2)
-                
+                msgSuccess()
+
+                // console.log(finalQueue)
+                // console.log(finalQueue2)
             });
             
         } catch (err) {
             console.log(err)
+            msgError(err)
         }
 
+    }
+
+{/* //////////////////////  Message */}
+    const msgSuccess = () => {
+        message.success({
+            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+              },});
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+              },});
     }
 
 {/* //////////////////////  Sum Stars */}

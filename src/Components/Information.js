@@ -5,10 +5,15 @@ import app, { firestore, storage } from "../Firebase/firebase"
 import Header from "./Parts/Header"
 
 import moment from "moment";
-import { List, Avatar, DatePicker, Space, Select, Button } from 'antd';
+import { List, Avatar, DatePicker, Space, Select, Button, message, Card, Comment, Divider} from 'antd';
+
+import { withStyles } from "@material-ui/core/styles";
+import Rating from "@material-ui/lab/Rating";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 
 import { AuthContext } from "./Auth"
 
+var _ = require('lodash');
 function Information( {allEmployees} ) {
     const { Option, OptGroup } = Select;
     
@@ -19,6 +24,7 @@ function Information( {allEmployees} ) {
     const [ listItem, setListItem ] = useState("")
 
     const [ queue, setQueue ] = useState([])
+    // const [ totalStar, settotalStar ] = useState("")
     
     const [ date, setDate ] = useState("")
     const [ time, setTime ] = useState("")
@@ -26,8 +32,20 @@ function Information( {allEmployees} ) {
 
     const [ progress, setProgress ] = useState(false)
 
-
     const { currentUser, userData, Modal } = useContext(AuthContext)
+
+
+    const QueueOrderedDESC =  _.orderBy(allEmployees.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
+    const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
+    const FilterReviewed = FilterByDone.filter(item => {
+        return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
+    })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
+
+    const sumStar = FilterReviewed.reduce((prev, item)=>{
+        return(item.Review.totalStar + prev )
+    }, 0)// 
+
+    const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 )
 
     const Style = {
         Header: {
@@ -41,6 +59,14 @@ function Information( {allEmployees} ) {
         }
     }
 
+    const StyledRating = withStyles({
+        iconFilled: {
+          color: "#ff6d75"
+        },
+        iconHover: {
+          color: "#ff3d47"
+        }
+      })(Rating);
 
 {/* ////////////////////// Date & Time Zone */}
     const onChangeDate = (date, dateString) => {
@@ -149,25 +175,47 @@ function Information( {allEmployees} ) {
                     }
                     ]}
     
-                 await   chiropractorRef.set(objChiropactor)
-    
-                    setTimeout(() => {
-                        setDate('')
-                        setTime('')
+                 await chiropractorRef.set(objChiropactor)
     
                         setIsModalVisible(false);
                         setProgress(false)
                         setstatusButt({ disabled: false })
-                        window.location.reload();
-                    }, 500);
+
+                        msgSuccess()
     
             } catch (err) {
                 console.log(err)
+                msgError(err)
             }
 
         } else {
-            alert("xx")
+            message.warning({
+                content: (<h5 className="mt-5">กรุณาเลือก วันที่/เวลา ให้ถูกต้อง</h5>), 
+                duration: 3,
+                style: {
+                    marginTop: '8vh',
+                  },});
         }
+    }
+
+{/* //////////////////////  Message */}
+    const msgSuccess = () => {
+        message.success({
+            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
+            duration: 1.5,
+            style: {
+                marginTop: '8vh',
+            },})
+            .then(() => window.location.reload())
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            },});
     }
 
 {/* ////////////////////// Modal Control */}
@@ -189,11 +237,15 @@ function Information( {allEmployees} ) {
         const final = allEmployees.queue.map((item, index) => {
             return {Date: item.Date, Time: item.Time}
         })
-        setQueue(final)
+            setQueue(final)
     }
 
     useEffect(() => {
         copyQueue()
+    }, [])
+
+    useEffect(() => {
+        // console.log()
     }, [])
 
     return (
@@ -222,7 +274,7 @@ function Information( {allEmployees} ) {
                     <h2>จำนวดผู้เข้ารับการนวด: { allEmployees? allEmployees.count : null}</h2>
                     <h2>⭐️: { allEmployees? allEmployees.star : null}</h2>
                     <h2>role: { allEmployees? allEmployees.role : null}</h2>
-
+    
                     <List
                         itemLayout="horizontal"
                         dataSource={allEmployees.listMassage}
@@ -239,7 +291,7 @@ function Information( {allEmployees} ) {
                                 description={""}
                             />  
                             {userData? (
-                                <Button onClick={()=>showModal(item)}>จอง</Button>
+                                <Button onClick={()=>showModal(item)} style={{background: "#0e77ca", color: "white", border: "1px solid transparent"}}>จอง</Button>
                             ) : (
                                 <div>กรุณาเข้าสู่ระบบ</div>
                             )}
@@ -248,8 +300,79 @@ function Information( {allEmployees} ) {
                     />
                   </div>
               </div>
-                
-                <br/>
+
+                <div className="col mt-5 border border-danger" style={{paddingLeft: "15%", paddingRight: "15%"}}>
+                <Card
+                    // key={index}
+                    type="inner"
+                    className="mb-3"
+                    title={
+                        <div className="text-left my-3">
+                            <h3>การรีวิว <FavoriteIcon style={{color: "#ff6d75"}}/>{finalStar}</h3> 
+                        </div>
+                    }>
+                        {FilterReviewed.map((item, index) => {
+                            console.log(item)
+                            return(
+                                <div>
+                                    <Comment
+                                        author={<h4>คุณ {item.Review.Reviewer}</h4>}
+                                        avatar={<Avatar src={item.MemberPic} />}
+                                        content={
+                                            <div className="text-left">
+
+                                           <p className="ml-5 my-3">{item.Review.Comment}</p>
+
+                                            <h5 className="ml-5">หน้าตา: 
+                                            <StyledRating
+                                                size="small"
+                                                value={item.Review.Stars.Cuteness}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            /></h5> 
+                                        <h5 className="ml-5">รูปร่าง: 
+                                            <StyledRating
+                                                size="small"
+                                                value={item.Review.Stars.BodyShape}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            /></h5> 
+                                        <h5 className="ml-5">ผิวพรรณ: 
+                                            <StyledRating
+                                                size="small"
+                                                value={item.Review.Stars.BodySkin}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            /></h5> 
+                                        <h5 className="ml-5">งานนวด: 
+                                            <StyledRating
+                                                size="small"
+                                                value={item.Review.Stars.Massage}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            /></h5> 
+                                        <h5 className="ml-5">ความเป็นกันเอง: 
+                                            <StyledRating
+                                                size="small"
+                                                value={item.Review.Stars.Friendly}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            /></h5> 
+                        
+                                            <Divider orientation="center"><h5>คะแนนรวม: {item.Review.totalStar} <FavoriteIcon style={{color: "#ff6d75"}}/></h5> </Divider>
+                        
+                                            <p>{item.Date} {item.Time}</p>
+                                        </div>
+                                        }
+
+                                        />
+                                   <Divider />
+                                </div>
+
+                            )
+                        })}
+                    </Card>
+                </div>
             </div>
 
 {/* ////////////////////// Modal */}
@@ -274,6 +397,7 @@ function Information( {allEmployees} ) {
                 <Space direction="vertical" size={12}>
                     <DatePicker
                         onChange={onChangeDate}
+                        // value={date !== "" ? date : ""}
                         format="YYYY-MM-DD"
                         disabledDate={disabledDate}
                         placeholder="วันที่"
@@ -308,11 +432,7 @@ function Information( {allEmployees} ) {
                         <Option key="22:00" disabled={ queue.find(item => item.Date === date && item.Time === "22:00"? (true) : (false)) }>22:00</Option>
                         <Option key="23:00" disabled={ queue.find(item => item.Date === date && item.Time === "23:00"? (true) : (false)) }>23:00</Option>
                     </OptGroup>
-                    
-                    
-                    
                 </Select>
-                        
                 </Modal>
         </div>
     )
