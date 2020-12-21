@@ -5,7 +5,8 @@ import app, { firestore, storage } from "../Firebase/firebase"
 import Header from "./Parts/Header"
 
 import moment from "moment";
-import { List, Avatar, DatePicker, Space, Select, Button, message, Card, Comment, Divider} from 'antd';
+import { List, Avatar, DatePicker, Space, Select, Button, message, Card, Comment, Divider, Empty, Image} from 'antd';
+import { BookOutlined } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
@@ -20,11 +21,10 @@ function Information( {allEmployees} ) {
     const [ status, setStatus ] = useState(true)
 
     const [ isModalVisible, setIsModalVisible ] = useState(false);
-    const [ statusButt, setstatusButt ] = useState({ disabled: false });
+    const [ statusButt, setstatusButt ] = useState(false);
     const [ listItem, setListItem ] = useState("")
 
     const [ queue, setQueue ] = useState([])
-    // const [ totalStar, settotalStar ] = useState("")
     
     const [ date, setDate ] = useState("")
     const [ time, setTime ] = useState("")
@@ -36,16 +36,16 @@ function Information( {allEmployees} ) {
 
 
     const QueueOrderedDESC =  _.orderBy(allEmployees.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
-    const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
-    const FilterReviewed = FilterByDone.filter(item => {
-        return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
-    })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
+        const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
+            const FilterReviewed = FilterByDone.filter(item => {
+            return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
+        })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
+                const sumStar = FilterReviewed.reduce((prev, item)=>{
+                    return(item.Review.totalStar + prev )
+                }, 0)// sum star ที่งหมด
+                    const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 ) // หารให้เต็ม 5 
 
-    const sumStar = FilterReviewed.reduce((prev, item)=>{
-        return(item.Review.totalStar + prev )
-    }, 0)// 
-
-    const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 )
+    const OrderedListMassage = _.orderBy(allEmployees.listMassage, ["id"], ["asc"])// เรียง list จาก id น้อยไปหามาก
 
     const Style = {
         Header: {
@@ -55,7 +55,9 @@ function Information( {allEmployees} ) {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "92vh"
+            minHeight: "92vh",
+            paddingLeft: "15%", 
+            paddingRight: "15%"
         }
     }
 
@@ -104,7 +106,7 @@ function Information( {allEmployees} ) {
 
         if(date && time !== ""){
             setProgress(true)
-            setstatusButt({ disabled: true })
+            setstatusButt(true)
 
             try{
                 // For Member
@@ -179,7 +181,7 @@ function Information( {allEmployees} ) {
     
                         setIsModalVisible(false);
                         setProgress(false)
-                        setstatusButt({ disabled: false })
+                        setstatusButt(false)
 
                         msgSuccess()
     
@@ -254,44 +256,63 @@ function Information( {allEmployees} ) {
             <Header />
           </div>
 
-          <div className="container-fluid mt-1 text-center border border-danger" style={Style.Content}>
+          <div className="container-fluid mt-1 pt-3 text-center border border-danger" style={Style.Content}>
               <div className="row">
 {/* ////////////////////// col left */}
                 <div className="col border border-danger" style={{height: "80vh"}}> 
                     {
                         allEmployees.urlPhoto ? (
-                            <img src={allEmployees.urlPhoto} style={{maxWidth: "60%"}} />
+                            <Image style={{maxWidth: "80%"}} src={allEmployees.urlPhoto}/>
                         ) : (
-                            <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
+                            <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png"/>
                         )
                     }
                 </div>
 
 {/* ////////////////////// col Right */}
-                <div className="col border border-danger">
-                    <h1>น้อง { allEmployees? allEmployees.displayName : null}</h1>
-                    <h2>อายุ: { allEmployees? allEmployees.age : null }</h2>
-                    <h2>จำนวดผู้เข้ารับการนวด: { allEmployees? allEmployees.count : null}</h2>
-                    <h2>⭐️: { allEmployees? allEmployees.star : null}</h2>
-                    <h2>role: { allEmployees? allEmployees.role : null}</h2>
+                <div className="col border border-danger ">
+                    <div className="row">
+                        <div className='col-12 pt-3 text-left'>
+                            <h1 style={{display: "inline"}}>น้อง { allEmployees? allEmployees.displayName : null}</h1>
+                        </div>
+                        <div className='col pt-3 text-left'>
+                            <h5>อายุ: { allEmployees? allEmployees.age : null } </h5>
+                            <h5>จำนวนผู้เข้าใช้บริการ: { allEmployees? FilterReviewed.length : null} </h5>
+
+                            {FilterReviewed.length !== 0?(
+                            <h2 style={{color: "#ff6d75"}}>{finalStar}: { allEmployees? (<StyledRating
+                                className="mt-1"
+                                size="large"
+                                precision={0.1}
+                                value={finalStar}
+                                icon={<FavoriteIcon fontSize="inherit" />}
+                                readOnly
+                            />) : null}</h2>):(<h3>ยังไม่มีการรีวิว</h3>)}
+
+                        </div>
+                    </div>
+                    
+                    <Divider orientation="center"><h5>รายการนวด</h5> </Divider>
     
                     <List
+                        className="mt-3"
                         itemLayout="horizontal"
-                        dataSource={allEmployees.listMassage}
+                        dataSource={OrderedListMassage}
+                        locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_DEFAULT} description="ไม่มีข้อมูล" />}}
                         renderItem={item => (
                             // ทำงานเหมือน map
-                        <List.Item className="mx-5">
+                        <List.Item className="mx-5 ">
                             {/* actions={[<a key="list-loadmore-edit" className="mr-5">edit</a>]} */}
                             <List.Item.Meta
-                                avatar={ <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> }
+                                // avatar={ <CaretRightFilled />}
                                 title={
-                                    <h4>{item.name} ราคา: {item.price}</h4>
+                                    <h4 style={{display: "inline"}}>{item.name} ราคา: <h4 style={{display: "inline", color: "#ff4d4f"}}>{item.price}</h4></h4>
                                 
                                     }
                                 description={""}
                             />  
                             {userData? (
-                                <Button onClick={()=>showModal(item)} style={{background: "#0e77ca", color: "white", border: "1px solid transparent"}}>จอง</Button>
+                                <Button onClick={()=>showModal(item)} style={{background: "#0e77ca", color: "white", border: "1px solid transparent"}} size="large"><BookOutlined /> จอง</Button>
                             ) : (
                                 <div>กรุณาเข้าสู่ระบบ</div>
                             )}
@@ -302,17 +323,31 @@ function Information( {allEmployees} ) {
               </div>
 
                 <div className="col mt-5 border border-danger" style={{paddingLeft: "15%", paddingRight: "15%"}}>
-                <Card
+                {/* {FilterReviewed.length !== 0? ( */}
+                    <Card
                     // key={index}
                     type="inner"
                     className="mb-3"
                     title={
                         <div className="text-left my-3">
-                            <h3>การรีวิว <FavoriteIcon style={{color: "#ff6d75"}}/>{finalStar}</h3> 
+                            <h3>การรีวิว   </h3>
+                            {FilterReviewed.length !== 0?(
+                            <>
+                                <h2 style={{display: "inline", color: "#ff6d75"}}> {finalStar}</h2><h4 style={{display: "inline", color: "#ff6d75"}}> /5</h4><br/>
+                                    <StyledRating
+                                        className="mt-1"
+                                        size="large"
+                                        precision={0.1}
+                                        value={finalStar}
+                                        icon={<FavoriteIcon fontSize="inherit" />}
+                                        readOnly
+                                    />
+                            </>):(<h3>ยังไม่มีการรีวิว</h3>)}
                         </div>
                     }>
-                        {FilterReviewed.map((item, index) => {
-                            console.log(item)
+                        {FilterReviewed.length !== 0?(
+                            FilterReviewed.map((item) => {
+                                // console.log(item)
                             return(
                                 <div>
                                     <Comment
@@ -364,27 +399,32 @@ function Information( {allEmployees} ) {
                                             <p>{item.Date} {item.Time}</p>
                                         </div>
                                         }
-
                                         />
                                    <Divider />
                                 </div>
 
                             )
-                        })}
+                        })):(<Empty description="ไม่มีข้อมูล" className="my-5" />)}
                     </Card>
                 </div>
             </div>
 
 {/* ////////////////////// Modal */}
                 <Modal
-                    title="เปลี่ยนชื่อ"
+                    // title="เปลี่ยนชื่อ"
                     visible={isModalVisible}
                     onOk={(e)=>submiBooking(e)}
                     onCancel={()=>handleCancel()}
                     closable={false}
-                    okButtonProps={ statusButt }
-                    cancelButtonProps={ statusButt }
                     className="text-center"
+                    footer={[
+                        <Button key="back" loading={statusButt} onClick={()=>handleCancel()}>
+                          ย้อนกลับ
+                        </Button>,
+                        <Button key="submit" type="primary" loading={statusButt} onClick={(e)=>submiBooking(e)}>
+                          ตกลง
+                        </Button>,
+                      ]}
                 >   
 
                 <div className="my-5">

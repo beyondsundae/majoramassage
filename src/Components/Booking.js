@@ -354,7 +354,7 @@ function Booking() {
                 ]}
 
             // set ขื้นไป 
-            // await userRef.set(objUser)
+            await userRef.set(objUser)
 
 {/* //////////////////////  For Employee */}    
             const getDocUser2 = await user2Ref.get()
@@ -477,6 +477,14 @@ useEffect(() => {
                 onCancel={handleCancel}
                 closable={false}
                 width="40%"
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                      ย้อนกลับ
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={handleOk}>
+                      ตกลง
+                    </Button>,
+                  ]}
             >
                 <div className="text-left ">
                     <div className="row">
