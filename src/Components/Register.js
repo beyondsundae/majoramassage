@@ -41,6 +41,7 @@ const Register = ( {history} ) => {
                                     createed: new Date().valueOf(),
                                     role: role,
                                     urlPhoto: "https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png",
+                                    Favorite: [],
                                     queue: []
                                 })
                             setLoading(true)
