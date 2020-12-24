@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import app, { firestore } from '../Firebase/firebase'
+import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
 
@@ -14,10 +14,8 @@ var _ = require('lodash');
 function Home() {
 
     const [ allFavorite, setAllFavorite ] = useState([])
-    const [ myFavavorite, setMyFavorite ] = useState([{createed: 1607160196776}, {createed: 1607191728800}])
+    const [ myFavorite, setMyFavorite ] = useState([])
     const { currentUser, userData, allEmployees } = useContext(AuthContext)
-
-
 
     const Style = {
         Header: {
@@ -40,45 +38,92 @@ function Home() {
         }
       })(Rating);
 
-    const ActionFav = (item, newValue, index) => {
-        console.log(item, "Action", index)
+{/* ////////////////////// Action Favorite */}
 
-        const Filtered = myFavavorite.filter(itemMyFav => {
-            return ![{createed: item.createed}].some(subCreated => subCreated.createed === itemMyFav.createed)
-            })// Different เอา item ที่กดมาออกจาก Favorite ของเรา
 
-        setMyFavorite(Filtered)
+    const unFavAction  = async (item, newValue, index) => {
+
+        try{
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
+            const Filtered = myFavorite.filter(itemMyFav => {
+                return ![{createed: item.createed}].some(subCreated => subCreated.createed === itemMyFav.createed)
+                })// Different เอา item ที่กดมาออกจาก Favorite ของเรา
+    
+            // setMyFavorite(Filtered)
+            
+            const obj = {
+               ...objDoc,
+                Favorite: Filtered
+            }
+
+            await userRef.set(obj)
+
+                // setchangeName('')
+
+                // setIsModalVisible(false);
+                // setProgress(false)
+                // setstatusButt(false)
+            
+
+        } catch(err) {
+            console.log(err)
+        }
     }
 
-    const SubFav = (item, newValue, index) => {
-        console.log(item, "Sub", index)
+    const FavAction = async (item, newValue, index) => {
+        
 
-        let tempArrx = [...myFavavorite]
+        try{
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
+            let tempArrx = [...myFavorite]
         
-        tempArrx = [ ...tempArrx,  {createed: item.createed}]
-        setMyFavorite(tempArrx)
-        
+            tempArrx = [ ...tempArrx,  {createed: item.createed}]
+            // setMyFavorite(tempArrx)
+            
+            const obj = {
+               ...objDoc,
+                Favorite: tempArrx
+            }
+
+            await userRef.set(obj)
+
+                // setchangeName('')
+
+                // setIsModalVisible(false);
+                // setProgress(false)
+                // setstatusButt(false)
+            
+
+        } catch(err) {
+            console.log(err)
+        }
         
     }
-
 
     useEffect(() => {
         let tempArr = []
         allEmployees.forEach((item) => {
            tempArr = [...tempArr, {createed:item.createed}]
         })
-
         setAllFavorite(tempArr)
+
     }, [])
     
     useEffect(() => {
-        console.log(userData.Favorite) 
-        console.log(allFavorite)
-    }, [allFavorite])
+        setMyFavorite(userData.Favorite)
+    }, [userData])
 
     useEffect(() => {
-        console.log(myFavavorite)
-    }, [myFavavorite])
+        console.log(myFavorite)
+    }, [myFavorite])
     
     return (
         <div>
@@ -117,7 +162,7 @@ function Home() {
                                     key={index}
                                     size="large"
                                     value={
-                                        myFavavorite.some((itemx)=>{
+                                        myFavorite.some((itemx)=>{
                                         if(itemx.createed === item.createed){
                                             return true
                                         }
@@ -128,9 +173,9 @@ function Home() {
                                     onChange={(event, newValue) =>{
                                         console.log(newValue)
                                         if(newValue === null){
-                                            ActionFav(item, newValue, index)
+                                            unFavAction(item, newValue, index)
                                         } else {
-                                            SubFav(item, newValue, index)
+                                            FavAction(item, newValue, index)
                                         }
                                         
 
