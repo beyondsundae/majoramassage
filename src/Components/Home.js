@@ -4,6 +4,8 @@ import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
 
+import { message } from "antd";
+
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { withStyles } from "@material-ui/core/styles";
@@ -12,21 +14,25 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Home() {
+    const {width} = useWidth()
 
     const [ allFavorite, setAllFavorite ] = useState([])
     const [ myFavorite, setMyFavorite ] = useState([])
-    const { currentUser, userData, allEmployees } = useContext(AuthContext)
+    const { currentUser, userData, allEmployees, message } = useContext(AuthContext)
 
     const Style = {
         Header: {
-            height: "7vh",
-            background: '#595959'
+            height: width < 500 ? "25vh" : "8vh",
+            background: '#444B54'
         },
         preContent: {
-            height: "30vh"
+            height: width < 500 ? "30vh" : "30vh",
+            backgroundColor: "mediumpurple"
         },
         Content: {
-            height: "62vh",
+            height: width < 500 ? "62vh" : "61vh",
+            paddingLeft: "10%", 
+            paddingRight: "10%",
         }
     }
     const StyledRating = withStyles({
@@ -39,8 +45,6 @@ function Home() {
       })(Rating);
 
 {/* ////////////////////// Action Favorite */}
-
-
     const unFavAction  = async (item, newValue, index) => {
 
         try{
@@ -52,8 +56,6 @@ function Home() {
             const Filtered = myFavorite.filter(itemMyFav => {
                 return ![{createed: item.createed}].some(subCreated => subCreated.createed === itemMyFav.createed)
                 })// Different เอา item ที่กดมาออกจาก Favorite ของเรา
-    
-            // setMyFavorite(Filtered)
             
             const obj = {
                ...objDoc,
@@ -62,20 +64,12 @@ function Home() {
 
             await userRef.set(obj)
 
-                // setchangeName('')
-
-                // setIsModalVisible(false);
-                // setProgress(false)
-                // setstatusButt(false)
-            
-
         } catch(err) {
-            console.log(err)
+            msgError(err)
         }
     }
 
     const FavAction = async (item, newValue, index) => {
-        
 
         try{
             const userRef = firestore.collection("users").doc(userData.uid)
@@ -83,47 +77,48 @@ function Home() {
             const getDoc = await userRef.get()
             const objDoc = await getDoc.data()
 
-            let tempArrx = [...myFavorite]
+            let tempArr = [...myFavorite]
         
-            tempArrx = [ ...tempArrx,  {createed: item.createed}]
-            // setMyFavorite(tempArrx)
+            tempArr = [ ...tempArr,  {createed: item.createed}]
             
             const obj = {
                ...objDoc,
-                Favorite: tempArrx
+                Favorite: tempArr
             }
 
             await userRef.set(obj)
 
-                // setchangeName('')
-
-                // setIsModalVisible(false);
-                // setProgress(false)
-                // setstatusButt(false)
-            
-
         } catch(err) {
-            console.log(err)
+            msgError(err)
         }
-        
     }
 
+{/* ////////////////////// message */}
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+    }
+
+{/* ////////////////////// Get Allemployees */}
     useEffect(() => {
         let tempArr = []
         allEmployees.forEach((item) => {
            tempArr = [...tempArr, {createed:item.createed}]
         })
         setAllFavorite(tempArr)
-
     }, [])
     
     useEffect(() => {
-        setMyFavorite(userData.Favorite)
+        setMyFavorite(userData? (userData.Favorite) : [] )
     }, [userData])
 
-    useEffect(() => {
-        console.log(myFavorite)
-    }, [myFavorite])
+    // useEffect(() => {
+    //     console.log(myFavorite)
+    // }, [myFavorite])
     
     return (
         <div>
@@ -153,37 +148,28 @@ function Home() {
 
                             )}
                             <div className="card-body">
-                                <h5 className="card-title">น้อง{item.displayName}</h5>
-                                {item.createed}
+                                <h5 className="card-title">น้อง {item.displayName}</h5>
+                                <h5 className="card-title">อายุ {item.age}</h5>
                             </div>
 
+{/* ////////////////////// Favorite zone */}
                             <div className="text-right mr-3">
                                 <StyledRating
                                     key={index}
                                     size="large"
                                     value={
                                         myFavorite.some((itemx)=>{
-                                        if(itemx.createed === item.createed){
-                                            return true
-                                        }
+                                        if(itemx.createed === item.createed){ return true } //Return True if there are in myFav
                                     })
                                 }
                                     max="1"
                                     precision={1}
                                     onChange={(event, newValue) =>{
-                                        console.log(newValue)
                                         if(newValue === null){
                                             unFavAction(item, newValue, index)
                                         } else {
                                             FavAction(item, newValue, index)
                                         }
-                                        
-
-                                        // if(newValue !== 1){
-                                        //     setTempFav((prev)=>[...prev, {creted: item.createed}])
-                                        // } else {
-                                        //     SubFav(item, newValue, index)
-                                        // }
                                     }} //Initial is null After click is 1
                                     icon={<FavoriteIcon fontSize="inherit" />}
                                     /> 
@@ -203,3 +189,21 @@ function Home() {
 }
 
 export default Home
+
+const useWidth = () => {
+    const [ width, setWidth ] = useState(window.innerWidth)
+
+    const widthHandler =()=>{
+        setWidth(window.innerWidth)
+    }
+
+    useEffect(()=>{
+        window.addEventListener("resize", widthHandler)
+
+        return()=>{
+            window.removeEventListener("resize", widthHandler)
+        }
+    }, [])
+
+    return { width };
+}

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
-import { Card, Button, Tabs, Empty, Divider, Input, message } from "antd";
+import { Card, Button, Tabs, Empty, Divider, Input } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
@@ -15,7 +15,7 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Booking() {
-    const { currentUser, userData, Modal } = useContext(AuthContext)
+    const { currentUser, userData, Modal, message } = useContext(AuthContext)
 
     const [ page, setPage ] = useState("1")
     const [ isModalVisible, setIsModalVisible ] = useState(false);

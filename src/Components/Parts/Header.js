@@ -29,11 +29,16 @@ function Header() {
 
     return (
         <div className="row ">
-                    <div className="col- col-sm-2 col-md-5 col-lg-5 col-xl-9">
+                    <div className={width < 500 ? ("col-12 col-sm-2 col-md-5 col-lg-5 col-xl-9 text-center mt-2") : ("col-12 col-sm-2 col-md-5 col-lg-5 col-xl-9 text-left mt-2 pl-5") }>
+                        <a href="/">
+                            <img 
+                            src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Flogo1.png?alt=media&token=78babaac-7e6a-4c99-90bd-917e8258448f" 
+                            style={{width: width < 800 ? ("60%") : ("15%")}}    />
+                        </a>
                     </div>
 
 {/* ////////////////////// Cart */}
-                    <div className="col-3 col-sm-2 col-md-2 pl-4 col-lg-2 col-xl-1 " style={{left: (width < 500 ? ("-20px") : ("60px") )}}>
+                    <div className="col-1 col-sm-2 col-md-2 pl-4 col-lg-2 col-xl-1" style={{left: (width < 500 ? ("-20px") : ("60px") )}}>
                         {userData? (
                             <>
                                 <Button size="large" className="mt-2 pt-3 mb- mr-4 text-white" style={{ border: "1px solid transparent", background: 'transparent'}}>
@@ -49,12 +54,12 @@ function Header() {
                     </div>
 
 {/* ////////////////////// Menu Profile */}
-                        <div className="col-9 col-sm-2 col-md-5 pl-3 col-lg-5 col-xl-2" >
+                        <div className="col-10 col-sm-2 col-md-5 pl-3 col-lg-5 col-xl-2">
                                 {currentUser? (
                                     <Menu
                                         mode="horizontal"
                                         className="mr-5 mt-2 text-right "
-                                        style={{border: "1px solid transparent", background: 'transparent', color: "white", paddingLeft: (width < 500 ? ("90px") : ("120px") )}}
+                                        style={{border: "1px solid transparent", background: 'transparent', color: "white", paddingLeft: (width < 500 ? ("130px") : ("120px") )}}
                                     > 
                                         <SubMenu key="SubMenu" 
                                             icon={

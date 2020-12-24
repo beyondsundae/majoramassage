@@ -4,7 +4,7 @@ import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
 
-import { Menu, Button, Divider, Descriptions, Select } from "antd";
+import { Menu, Button, Divider, Descriptions, Select, message } from "antd";
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -48,7 +48,7 @@ function Profile() {
 
     const [ collapse, setCollapse ] = useState(true)
 
-    const { currentUser, userData, Modal } = useContext(AuthContext)
+    const { currentUser, userData, Modal, message } = useContext(AuthContext)
 
     const QueueOrderedDESC =  _.orderBy(userData.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
@@ -136,10 +136,9 @@ function Profile() {
                 setIsModalVisible(false);
                 setProgress(false)
                 setstatusButt(false)
-            
 
         } catch(err) {
-            console.log(err)
+            msgError(err)
         }
     }
 
@@ -241,7 +240,18 @@ function Profile() {
             )
         } else {
             console.log("no upload")
+            msgError("No Upload")
         }
+    }
+
+{/* ////////////////////// message */}
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
 {/* ////////////////////// Get Photo when every update */}
@@ -253,7 +263,8 @@ function Profile() {
             setPic(url)
       }).catch((err) => {
         console.log(err)
-      });
+        msgError(err)
+      })
     } 
       
       tempPic()

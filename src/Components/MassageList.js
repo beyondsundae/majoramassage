@@ -10,7 +10,6 @@ import Header from "./Parts/Header"
 import { AuthContext } from "./Auth"
 
 function MassageList() {
-    const { currentUser, userData } = useContext(AuthContext)
     const { Column, ColumnGroup } = Table;
 
     const [ allMassageLitsts, setAllmassageLists ] = useState([])
@@ -18,6 +17,8 @@ function MassageList() {
 
     const [ finalAllMassageLitsts, setfinalAllMassageLitsts ] = useState([])
     const [ finalIndividiList, setfinalIndividiList ] = useState([])
+    
+    const { currentUser, userData, message } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -29,6 +30,15 @@ function MassageList() {
         Content: {
             minHeight: "92vh"
         }
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
     //Get allMassageLists and Set currntUser List :อันดับแรก
@@ -103,6 +113,7 @@ function MassageList() {
 
         } catch (err) {
             console.log(err)
+            msgError(err)
         }
     }
 
@@ -129,10 +140,9 @@ function MassageList() {
 
         } catch (err) {
             console.log(err)
+            msgError(err)
         }
     }
-
-   
 
     return (
         <div>

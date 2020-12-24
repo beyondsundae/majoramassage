@@ -5,7 +5,7 @@ import app, { firestore, storage } from "../Firebase/firebase"
 import Header from "./Parts/Header"
 
 import moment from "moment";
-import { List, Avatar, DatePicker, Space, Select, Button, message, Card, Comment, Divider, Empty, Image} from 'antd';
+import { List, Avatar, DatePicker, Space, Select, Button, Card, Comment, Divider, Empty, Image} from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
@@ -32,7 +32,7 @@ function Information( {allEmployees} ) {
 
     const [ progress, setProgress ] = useState(false)
 
-    const { currentUser, userData, Modal } = useContext(AuthContext)
+    const { currentUser, userData, Modal, message } = useContext(AuthContext)
 
 
     const QueueOrderedDESC =  _.orderBy(allEmployees.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
