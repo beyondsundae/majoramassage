@@ -10,11 +10,14 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { AuthContext } from "./Auth"
 
+var _ = require('lodash');
 function Home() {
 
-    const [ myFavorite, setMyFavorite ] = useState([])
-
+    const [ allFavorite, setAllFavorite ] = useState([])
+    const [ myFavavorite, setMyFavorite ] = useState([{createed: 1607160196776}, {createed: 1607191728800}])
     const { currentUser, userData, allEmployees } = useContext(AuthContext)
+
+
 
     const Style = {
         Header: {
@@ -37,11 +40,24 @@ function Home() {
         }
       })(Rating);
 
-    const AddFav = () => {
+    const ActionFav = (item, newValue, index) => {
+        console.log(item, "Action", index)
 
+        const Filtered = myFavavorite.filter(itemMyFav => {
+            return ![{createed: item.createed}].some(subCreated => subCreated.createed === itemMyFav.createed)
+            })// Different เอา item ที่กดมาออกจาก Favorite ของเรา
+
+        setMyFavorite(Filtered)
     }
 
-    const SubFav = () => {
+    const SubFav = (item, newValue, index) => {
+        console.log(item, "Sub", index)
+
+        let tempArrx = [...myFavavorite]
+        
+        tempArrx = [ ...tempArrx,  {createed: item.createed}]
+        setMyFavorite(tempArrx)
+        
         
     }
 
@@ -49,16 +65,20 @@ function Home() {
     useEffect(() => {
         let tempArr = []
         allEmployees.forEach((item) => {
-           tempArr = [...tempArr, {created:item.createed}]
+           tempArr = [...tempArr, {createed:item.createed}]
         })
 
-        setMyFavorite(tempArr)
+        setAllFavorite(tempArr)
     }, [])
     
     useEffect(() => {
         console.log(userData.Favorite) 
-        console.log(myFavorite)
-    }, [myFavorite])
+        console.log(allFavorite)
+    }, [allFavorite])
+
+    useEffect(() => {
+        console.log(myFavavorite)
+    }, [myFavavorite])
     
     return (
         <div>
@@ -78,6 +98,7 @@ function Home() {
                 <div className="row text-center"> 
                 {allEmployees.map((item, index) => {
                     return(
+                        <>
                         <a href={"/em/" + item.createed} key={index}>
                              <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
                             {item.urlPhoto ? (
@@ -88,22 +109,45 @@ function Home() {
                             )}
                             <div className="card-body">
                                 <h5 className="card-title">น้อง{item.displayName}</h5>
+                                {item.createed}
                             </div>
 
                             <div className="text-right mr-3">
                                 <StyledRating
+                                    key={index}
                                     size="large"
-                                    // value=""
-                                    max="5"
+                                    value={
+                                        myFavavorite.some((itemx)=>{
+                                        if(itemx.createed === item.createed){
+                                            return true
+                                        }
+                                    })
+                                }
+                                    max="1"
                                     precision={1}
-                                    onChange={(event, newValue) =>{console.log(newValue === 1? ("1") : ("0"))}}
+                                    onChange={(event, newValue) =>{
+                                        console.log(newValue)
+                                        if(newValue === null){
+                                            ActionFav(item, newValue, index)
+                                        } else {
+                                            SubFav(item, newValue, index)
+                                        }
+                                        
+
+                                        // if(newValue !== 1){
+                                        //     setTempFav((prev)=>[...prev, {creted: item.createed}])
+                                        // } else {
+                                        //     SubFav(item, newValue, index)
+                                        // }
+                                    }} //Initial is null After click is 1
                                     icon={<FavoriteIcon fontSize="inherit" />}
                                     /> 
                             </div>
                             
                         </div>
                         </a>
-                       
+                           
+                       </>
                     )
 
                 })}

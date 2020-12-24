@@ -39,10 +39,10 @@ function Information( {allEmployees} ) {
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
             const FilterReviewed = FilterByDone.filter(item => {
             return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
-        })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
+            })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
                 const sumStar = FilterReviewed.reduce((prev, item)=>{
                     return(item.Review.totalStar + prev )
-                }, 0)// sum star ที่งหมด
+                    }, 0)// sum star ที่งหมด
                     const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 ) // หารให้เต็ม 5 
 
     const OrderedListMassage = _.orderBy(allEmployees.listMassage, ["id"], ["asc"])// เรียง list จาก id น้อยไปหามาก

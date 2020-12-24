@@ -525,9 +525,22 @@ useEffect(() => {
                                 size="large"
                                 value={value.Review.Stars.Cuteness}
                                 precision={1}
-                                onChange={(event, newValue) => {newValue == null ? setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer,
-                                        Stars: {...value.Review.Stars, Cuteness: 0, },
-                                }}) : setValue({Review:{...value.Review, totalStar: finalStars, Reviewer:info.Review.Reviewer, Stars: { ...value.Review.Stars, Cuteness: newValue}}})}}
+                                onChange={(event, newValue) => {newValue == null ? setValue(
+                                    {Review: {
+                                        ...value.Review, 
+                                        totalStar: finalStars, 
+                                        Reviewer:info.Review.Reviewer,
+                                            Stars: {
+                                                ...value.Review.Stars, 
+                                                Cuteness: 0, },
+                                }}) : setValue(
+                                    {Review: {
+                                        ...value.Review, 
+                                        totalStar: finalStars, 
+                                        Reviewer:info.Review.Reviewer, 
+                                            Stars: {
+                                                 ...value.Review.Stars, 
+                                                 Cuteness: newValue}}})}}
                                 icon={<FavoriteIcon fontSize="inherit" />}
                             /></h5> 
                         <h5>รูปร่าง: 
