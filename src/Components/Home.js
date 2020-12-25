@@ -154,33 +154,35 @@ function Home() {
 
 {/* ////////////////////// Favorite zone */}
                             <div className="text-right mr-3">
-                                <StyledRating
-                                    key={index}
-                                    size="large"
-                                    value={
-                                        myFavorite.some((itemx)=>{
-                                        if(itemx.createed === item.createed){ return true } //Return True if there are in myFav
-                                    })
-                                }
-                                    max="1"
-                                    precision={1}
-                                    onChange={(event, newValue) =>{
-                                        if(newValue === null){
-                                            unFavAction(item, newValue, index)
-                                        } else {
-                                            FavAction(item, newValue, index)
+                                {userData? ( userData.role === "member"? (
+                                    <StyledRating
+                                        key={index}
+                                        size="large"
+                                        value={
+                                            userData.role === "member"? (
+                                                myFavorite.some((itemx)=>{
+                                                    if(itemx.createed === item.createed){ return true } //Return True if there are in myFav
+                                                })
+                                            ) : false
                                         }
-                                    }} //Initial is null After click is 1
-                                    icon={<FavoriteIcon fontSize="inherit" />}
+                                        max="1"
+                                        precision={1}
+                                        onChange={(event, newValue) =>{
+                                            if(newValue === null){
+                                                unFavAction(item, newValue, index)
+                                            } else {
+                                                FavAction(item, newValue, index)
+                                            }
+                                        }} //Initial is null After click is 1
+                                        icon={<FavoriteIcon fontSize="inherit" />}
                                     /> 
+                                ) : null) : null}
+                                
                             </div>
-                            
                         </div>
                         </a>
-                           
                        </>
                     )
-
                 })}
                  </div>   
             </div>

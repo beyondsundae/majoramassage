@@ -1,22 +1,41 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react'
 import { Redirect } from 'react-router'
-import app  from "../Firebase/firebase"
+
+import app, { firestore }  from "../Firebase/firebase"
+
+import Header from "./Parts/Header"
+
+import { Form, Input, Button, Radio  } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { AuthContext } from "./Auth"
-import { firestore } from '../Firebase/firebase'
 
 const Register = ( {history} ) => {
-    const { currentUser } = useContext(AuthContext)
-
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
+    const [ role, setRole ] = useState(null)
 
     const [ loading, setLoading ] = useState(true)
 
-    const [ role, setRole ] = useState(null)
+    const { currentUser } = useContext(AuthContext)
 
-    const handleRegister = async (event) => {
-        event.preventDefault();
+    const Style = {
+        Header: {
+            height: "7vh",
+            background: '#444B54'
+
+        },
+        // preContent: {
+        //     height: "30vh"
+        // },
+        Content: {
+            minHeight: "92vh",
+            paddingLeft: "15%", 
+            paddingRight: "15%"
+        }
+    }
+
+    const handleRegister = async () => {
 
         if(role == null){
             alert(" plz select role")
@@ -71,11 +90,11 @@ const Register = ( {history} ) => {
     
                 if(error.code == "auth/email-already-in-use"){
                     setLoading(true)
-    
+                    alert(error.message) 
+                    
                     setTimeout(() => {
                         setLoading(false)
-                        alert(error.message) 
-                        history.push("/")
+                        history.push("/login")
                     }, 2000);
                     
                 } else {
@@ -83,8 +102,15 @@ const Register = ( {history} ) => {
                 }
             }
         } 
-        
     }
+
+    const onRadioChange = e => {
+        setRole(e.target.value);
+      };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+      };
 
     useEffect(() => {
         setTimeout(() => {
@@ -115,52 +141,112 @@ const Register = ( {history} ) => {
     }
 
     return (
-        <div style={{textAlign: "center", marginTop: "150px"}}>
-            <h1>Register</h1>
+        <div>
+            <div className="container-fluid text-right" style={Style.Header}>
+                <Header />
+            </div>
 
-            <form onSubmit= { handleRegister }>
-                <label className="mt-5">
-                    Email <br/>
-                    <input 
-                        required
-                        type="email" 
-                        placeholder="Email" 
-                        onChange={(e)=>{setEmail(e.target.value)}} />
-                </label><br/>
+            <div className="container-fluid mt-1 pt-3 text-center " style={Style.Content}>
+                <div className="row">
+                    <div className="col" style={{background: '#444B54'}}>
+                        <img 
+                            className=""
+                            src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Fmassage.svg?alt=media&token=91738933-8495-4723-94f2-5f6f3d98ffdc" 
+                            // style={{width: width < 800 ? ("60%") : ("15%")}}    
+                            style={{width: "90%", paddingTop: "50px"}}
+                        />
+                    </div>
 
-                <label className="mt-2">
-                    Password <br/>
-                    <input 
-                        required
-                        type="password" 
-                        placeholder="Password" 
-                        onChange={(e)=>{setPassword(e.target.value)}} />
-                </label><br/>
+                    <div className="col" style={{height: "90vh"}}>
+                        <img 
+                            className="mt-5"
+                            src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Flogo2.png?alt=media&token=7447933b-890f-4ddf-947f-ba7a455cb7cb" 
+                            // style={{width: width < 800 ? ("60%") : ("15%")}}    
+                        />
 
-                <div className="form-check">
-                <input className="form-check-input" type="radio" name="exampleRadios" id="member" value="member"  onClick={(e)=> setRole(e.target.value)}/>
-                <label className="form-check-label" >
-                   Register as member
-                </label>
+                        <h1>สมัครบัญชี</h1>
+
+                        <div className="text-center mt-5">
+                            <Form
+                                style={{width: "50%"}}
+                                name="basic"
+                                onFinish={handleRegister}
+                                onFinishFailed={onFinishFailed}
+                                className="mx-auto"
+                                >
+                                <Form.Item
+                                    name="email"
+                                    rules={[
+                                        { type: 'email', message: 'กรุณากรอกอีเมลให้ถูกต้อง' },
+                                        { required: true, message: 'กรุณากรอกอีกเมล' },
+                                    ]}
+                                    onChange={(e)=>{setEmail(e.target.value)}}
+                                >
+                                    <Input 
+                                        prefix={<UserOutlined className="site-form-item-icon" />} 
+                                        placeholder="อีเมล"/>
+                                        
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="password"
+                                    hasFeedback
+                                    rules={[
+                                    { required: true, message: 'กรุณากรอกรหัสผ่าน', },
+                                    { min: 6, message: 'รหัสผ่านขั้นต่ำ 6 ตัวอักษร' },
+                                    ]}
+                                    onChange={(e)=>{setPassword(e.target.value)}}
+                                >
+                                    <Input.Password  
+                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                        type="password"
+                                        placeholder="รหัสผ่าน" 
+                                        
+                                     />
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="confirm"
+                                    dependencies={["password"]}
+                                    hasFeedback
+                                    rules={[
+                                    { required: true, message: "กรุณากรอกรหหัสผ่าน" },
+                                    { min: 6, message: 'รหัสผ่านขั้นต่ำ 6 ตัวอักษร' },
+                                    ({ getFieldValue }) => ({
+                                        validator(rule, value) {
+                                        if (!value || getFieldValue("password") === value) {
+                                            return Promise.resolve();
+                                        }
+
+                                        return Promise.reject(
+                                            "รหัสผ่านไม่ตรงกัน"
+                                        );
+                                        }
+                                    })
+                                    ]}
+                                >
+                                    <Input.Password 
+                                        prefix={<LockOutlined className="site-form-item-icon" />}
+                                        placeholder="ยืนยันรหัสผ่าน" 
+                                    />
+                                </Form.Item>
+
+                                <Radio.Group onChange={onRadioChange} value={role} className="mb-3 text-left">
+                                    <Radio value="member">Register as member</Radio>
+                                    <Radio value="employee">Register as employee</Radio>
+                                </Radio.Group>
+
+                                <Form.Item > 
+                                    <Button type="primary" htmlType="submit" style={{width: "300px"}}>
+                                        สมัครเลย !
+                                    </Button><br/>
+                                        มีบัญชีอยู่แล้ว ? <a href="/login">ลงชื่อเข้าใช้เลย !</a>
+                                </Form.Item>
+                            </Form>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="form-check">
-                <input className="form-check-input" type="radio" name="exampleRadios" id="employee" value="employee" onClick={(e)=> setRole(e.target.value)}/>
-                <label className="form-check-label" >
-                   Register as employee
-                </label>
-                </div>
-
-                <button className="mt-3 btn btn-primary" type="submit">Register</button>
-                
-            </form>
-
-            <button className="mt-3 btn btn-info" >
-                <a href="/login" className="text-light" style={{textDecoration: "none"}}>
-                Login
-                </a>
-            </button>
-            
+            </div>
         </div>
     )
 }

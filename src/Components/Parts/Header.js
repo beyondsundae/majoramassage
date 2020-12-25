@@ -64,7 +64,8 @@ function Header() {
                                         <SubMenu key="SubMenu" 
                                             icon={
                                                 <div className="d-inline ">
-                                                    <Avatar src={userData.urlPhoto} size="large" shape="square" />
+                                                    {userData? (<Avatar src={userData.urlPhoto} size="large" shape="square" />) : null}
+                                                    
                                                     {(userData? ( 
                                                         userData.role == "employee" ? (
                                                             <p className="d-inline ml-2 text-white">น้อง  { userData.displayName} </p> ) : (
@@ -72,15 +73,15 @@ function Header() {
                                                 </div>} 
                                             title={<div className="d-inline ml-2">{Arrow}</div>}>
                                                 <Menu.Item key="setting:1" ><a href="/profile"><ProfileOutlined /> โปรไฟล์</a></Menu.Item>
-                                                <Menu.Item key="setting:2" onClick={() => {app.auth().signOut()}}><LogoutOutlined /> Log out</Menu.Item>
+                                                <Menu.Item key="setting:2" onClick={() => {app.auth().signOut().then(() => window.location.reload())}}><LogoutOutlined /> Log out</Menu.Item>
                                         </SubMenu>
                                     </Menu>
                                 ) : (
-                                    <h5 className="mt-3 mr-5">
+                                    <p className="mt-4 mr-4">
                                         <a href="/login" className=" text-white">
                                            <LoginOutlined /> Log In
                                         </a>
-                                    </h5>
+                                    </p>
                                 )}
                         </div>
                 </div>

@@ -49,7 +49,8 @@ function Information( {allEmployees} ) {
 
     const Style = {
         Header: {
-            height: "7vh"
+            height: "7vh",
+            background: '#444B54'
         },
         // preContent: {
         //     height: "30vh"
