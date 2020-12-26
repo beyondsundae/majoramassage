@@ -9,6 +9,7 @@ import Home from "./Components/Home";
 import Profile from "./Components/Profile";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
+import Forgotpassword from "./Components/Forgotpassword";
 import Information from "./Components/Information";
 import MassageList from './Components/MassageList'
 import Booking from "./Components/Booking";
@@ -60,6 +61,7 @@ const App = () => {
           <Route exact path="/" component={ Home } />
           <Route exact path="/login" component={ Login } />
           <Route exact path="/register" component={ Register } />
+          <Route exact path="/forgot" component={ Forgotpassword } />
 
 
           {allEmployees.map((item, index) => {

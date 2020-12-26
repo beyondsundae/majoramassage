@@ -6,17 +6,17 @@ import app from "../Firebase/firebase"
 import Header from "./Parts/Header"
 
 import { Form, Input, Button } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 
 import { AuthContext } from "./Auth"
 
-const Login = () => {
+const Forgotpassword = ({history}) => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
     const [ loading, setLoading ] = useState(true)
 
-    const { currentUser, userData, message, width } = useContext(AuthContext)
+    const { currentUser, message, width } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -34,47 +34,46 @@ const Login = () => {
         }
     }
 
-    const handleLogin = async () => {
-        // event.preventDefault();
-        
+    const handleReset = async () => {
         try{
-            await app
+            await app 
             .auth()
-            .signInWithEmailAndPassword( email, password)
-            .then(() => {
-                setLoading(true)
-                msgSuccess("ยินดีต้อนรับ")
+            .sendPasswordResetEmail(email)
+            .then(()=>{
+            //    setLoading(true) 
+               msgSuccess()
             })
 
             setTimeout(() => {
-                setLoading(false)
+                // setLoading(false)
+                history.push("/login")
             }, 2000)
-        }
-        catch(error){
-            setPassword(" ")
-            alert(error)
+
+        } catch(err) {
+            msgError("ไม่พบอีเมลนี้")
         }
     }
 
-        {/* //////////////////////  Message */}
-        const msgSuccess = (item) => {
-            message.success({
-                content: (<h5 className="mt-5">{item}</h5>), 
-                duration: 3,
-                style: {
-                    marginTop: '8vh',
-                }})
-                .then()
-        }
-    
-        const msgError = (err) => {
-            message.error({
-                content: (<h5 className="mt-5">{err}</h5>), 
-                duration: 3,
-                style: {
-                    marginTop: '8vh',
-                }})
-        }
+    {/* //////////////////////  Message */}
+    const msgSuccess = () => {
+        message.success({
+            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+                
+            }})
+            .then()
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+    }
     
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -83,7 +82,7 @@ const Login = () => {
     useEffect(() => {
         setTimeout(() => {
             setLoading(false)
-        }, 1000);
+        }, 2000);
     }, [])
 
     if( currentUser ){
@@ -124,22 +123,22 @@ const Login = () => {
                         />
                     </div>
 
-                    <div className="col-12 col-md-6 col-lg-6 order-first order-sm-last" style={{height: "90vh"}}>
+                    <div className="col-12 col-md-6 col-lg-6 order-first order-sm-last" style={{height: width < 500 ? ("") : ("90vh")}}>
                         <img 
                             className="mt-5"
                             src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Flogo2.png?alt=media&token=7447933b-890f-4ddf-947f-ba7a455cb7cb" 
-                            style={{width: width < 800 ? ("60%") : ("70%")}}   
+                            style={{width: width < 800 ? ("60%") : ("70%")}}    
                         />
 
                         <div className="mt-5">
-                            <h1>เข้าสู่ระบบ</h1>
+                            <h1>ลืมรหัสผ่าน</h1>
                         </div>
 
                         <div className="text-center mt-5">
                             <Form
                                 style={{width: "50%"}}
                                 name="basic"
-                                onFinish={handleLogin}
+                                onFinish={handleReset}
                                 onFinishFailed={onFinishFailed}
                                 className="mx-auto"
                                 >
@@ -163,36 +162,11 @@ const Login = () => {
                                         
                                 </Form.Item>
 
-                                <Form.Item
-                                    name="password"
-                                    rules={[
-                                    {
-                                        required: true,
-                                        message: 'กรุณากรอกรหัสผ่าน',
-                                    },
-                                    ]}
-                                    onChange={(e)=>{setPassword(e.target.value)}}
-                                    style={{marginBottom: "0px"}}
-                                >
-                                    <Input.Password  
-                                        prefix={<LockOutlined className="site-form-item-icon" />}
-                                        type="password"
-                                        placeholder="รหัสผ่าน" 
-                                        
-                                     />
-                                </Form.Item>
-
-                                <Form.Item className="text-right">
-                                    <a  href="/forgot">
-                                        ลืมรหัสผ่านใช่หรือไม่ ?
-                                    </a>
-                                </Form.Item>
-
                                 <Form.Item > 
                                     <Button type="primary" htmlType="submit" style={{width: "100%"}}>
-                                        ลงชื่อเข้าใช้
+                                        รีเซ็ทรหัสผ่าน
                                     </Button><br/>
-                                        หรือ ? <a href="/register">สมัครตอนนี้เลย!</a>
+                                        มีบัญชีอยู่แล้ว ? <a href="/login">ลงชื่อเข้าใช้เลย !</a>
                                 </Form.Item>
                             </Form>
                         </div>
@@ -205,4 +179,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Forgotpassword

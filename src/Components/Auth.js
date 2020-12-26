@@ -7,7 +7,10 @@ import { Modal, Button, message } from 'antd';
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ children }) => {
+    const {width} = useWidth()
+
     const [ currentUser, setCurrentUser ] = useState(null)
+
     const [ loading, setLoading ] = useState(true)
     
     const [ userData, setUserData ] = useState()
@@ -38,7 +41,7 @@ export const AuthProvider = ({ children }) => {
             setCurrentUser(user)
             setTimeout(() => {
                 setLoading(false)
-            }, 1000);
+            }, 0);
             
         })
     }, [loading])
@@ -66,18 +69,18 @@ export const AuthProvider = ({ children }) => {
         // console.log(allEmployees)
     }, [allEmployees])
 
-    if(loading){
-        return(
-            <div style={{textAlign: "center", marginTop: "150px"}}>
-                <h1>
-                    Loading . . . (Auth)
-                </h1>
-            </div>
-        )
-    }
+    // if(loading){
+    //     return(
+    //         <div style={{textAlign: "center", marginTop: "150px"}}>
+    //             <h1>
+    //                 Loading . . . (Auth)
+    //             </h1>
+    //         </div>
+    //     )
+    // }
 
     return (
-        <AuthContext.Provider value={{ currentUser, userData, allEmployees, Modal, message }}>
+        <AuthContext.Provider value={{ width, currentUser, userData, allEmployees, Modal, message }}>
             {children}
         </AuthContext.Provider>
         
@@ -85,3 +88,20 @@ export const AuthProvider = ({ children }) => {
 }
 
 
+const useWidth = () => {
+    const [ width, setWidth ] = useState(window.innerWidth)
+
+    const widthHandler =()=>{
+        setWidth(window.innerWidth)
+    }
+
+    useEffect(()=>{
+        window.addEventListener("resize", widthHandler)
+
+        return()=>{
+            window.removeEventListener("resize", widthHandler)
+        }
+    }, [])
+
+    return { width };
+}

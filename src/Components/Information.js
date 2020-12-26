@@ -18,6 +18,7 @@ var _ = require('lodash');
 function Information( {allEmployees} ) {
     const { Option, OptGroup } = Select;
     
+    const [ myFavorite, setMyFavorite ] = useState([])
     const [ status, setStatus ] = useState(true)
 
     const [ isModalVisible, setIsModalVisible ] = useState(false);
@@ -97,6 +98,55 @@ function Information( {allEmployees} ) {
     useEffect(() => {
         setDateTime({Date: date, Time: time})
     }, [date, time])
+
+{/* ////////////////////// Action Favorite */}
+    const unFavAction  = async (item, newValue, index) => {
+
+        try{
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
+            const Filtered = myFavorite.filter(itemMyFav => {
+                return ![{createed: item.createed}].some(subCreated => subCreated.createed === itemMyFav.createed)
+                })// Different เอา item ที่กดมาออกจาก Favorite ของเรา
+            
+            const obj = {
+               ...objDoc,
+                Favorite: Filtered
+            }
+
+            await userRef.set(obj)
+
+        } catch(err) {
+            msgError(err)
+        }
+    }
+
+    const FavAction = async (item, newValue, index) => {
+
+        try{
+            const userRef = firestore.collection("users").doc(userData.uid)
+
+            const getDoc = await userRef.get()
+            const objDoc = await getDoc.data()
+
+            let tempArr = [...myFavorite]
+        
+            tempArr = [ ...tempArr,  {createed: item.createed}]
+            
+            const obj = {
+               ...objDoc,
+                Favorite: tempArr
+            }
+
+            await userRef.set(obj)
+
+        } catch(err) {
+            msgError(err)
+        }
+    }
 
 {/* ////////////////////// When Submit */}
     const submiBooking = async (e) => {
@@ -243,6 +293,11 @@ function Information( {allEmployees} ) {
             setQueue(final)
     }
 
+{/* //////////////////////  Get myFav */}
+    useEffect(() => {
+        setMyFavorite(userData? (userData.Favorite) : [] )
+    }, [userData])
+
     useEffect(() => {
         copyQueue()
     }, [])
@@ -275,6 +330,33 @@ function Information( {allEmployees} ) {
                     <div className="row">
                         <div className='col-12 pt-3 text-left'>
                             <h1 style={{display: "inline"}}>น้อง { allEmployees? allEmployees.displayName : null}</h1>
+
+{/* ////////////////////// Favorite zone */}
+                            <div className="text-right mr-3">
+                                {userData? ( userData.role === "member"? (
+                                    <StyledRating
+                                        // key={index}
+                                        size="large"
+                                        value={
+                                            userData.role === "member"? (
+                                                myFavorite.some((itemx)=>{
+                                                    if(itemx.createed === allEmployees.createed){ return true } //Return True if there are in myFav
+                                                })
+                                            ) : false
+                                        }
+                                        max="1"
+                                        precision={1}
+                                        onChange={(event, newValue) =>{
+                                            if(newValue === null){
+                                                unFavAction(allEmployees, newValue )
+                                            } else {
+                                                FavAction(allEmployees, newValue)
+                                            }
+                                        }} //Initial is null After click is 1
+                                        icon={<FavoriteIcon fontSize="inherit" />}
+                                    /> 
+                                ) : null) : null}
+                            </div>
                         </div>
                         <div className='col pt-3 text-left'>
                             <h5>อายุ: { allEmployees? allEmployees.age : null } </h5>
@@ -295,6 +377,7 @@ function Information( {allEmployees} ) {
                     
                     <Divider orientation="center"><h5>รายการนวด</h5> </Divider>
     
+{/* ////////////////////// List นวด */}
                     <List
                         className="mt-3"
                         itemLayout="horizontal"
@@ -323,6 +406,7 @@ function Information( {allEmployees} ) {
                   </div>
               </div>
 
+{/* ////////////////////// Review zone */}
                 <div className="col mt-5 border border-danger" style={{paddingLeft: "15%", paddingRight: "15%"}}>
                 {/* {FilterReviewed.length !== 0? ( */}
                     <Card

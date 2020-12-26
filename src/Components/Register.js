@@ -17,11 +17,11 @@ const Register = ( {history} ) => {
 
     const [ loading, setLoading ] = useState(true)
 
-    const { currentUser } = useContext(AuthContext)
+    const { currentUser, message, width } = useContext(AuthContext)
 
     const Style = {
         Header: {
-            height: "7vh",
+            height: width < 500 ? "25vh" : "8vh",
             background: '#444B54'
 
         },
@@ -29,9 +29,9 @@ const Register = ( {history} ) => {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "92vh",
-            paddingLeft: "15%", 
-            paddingRight: "15%"
+            height: width < 500 ? "62vh" : "61vh",
+            paddingLeft: width < 800 ? ("none") : ("15%"), 
+            paddingRight: width < 800 ? ("none") : ("15%"), 
         }
     }
 
@@ -131,10 +131,15 @@ const Register = ( {history} ) => {
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
                 <h1>
-                    <div className="spinner-border" role="status">
-                    </div>
+                    {/* <div className="spinner-border" role="status">
+                    </div> */}
 
-                    <div className="mt-5">Loading . . . . (Register)</div>
+                    <img 
+                        src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/loading%2F78e826ca1b9351214dfdd5e47f7e2024.gif?alt=media&token=38b92308-51b2-4574-a027-227975ba44ac"
+                        style={{width: width < 800? ("100%") : ("50%")}}
+                        />
+
+                    {/* <div className="mt-5">Loading . . . . (Register)</div> */}
                 </h1>
             </div>
         )
@@ -148,20 +153,19 @@ const Register = ( {history} ) => {
 
             <div className="container-fluid mt-1 pt-3 text-center " style={Style.Content}>
                 <div className="row">
-                    <div className="col" style={{background: '#444B54'}}>
+                    <div className="col-12 col-md-6 col-lg-6 order-last order-sm-first" style={{background: '#444B54'}}>
                         <img 
                             className=""
                             src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Fmassage.svg?alt=media&token=91738933-8495-4723-94f2-5f6f3d98ffdc" 
-                            // style={{width: width < 800 ? ("60%") : ("15%")}}    
-                            style={{width: "90%", paddingTop: "50px"}}
+                            style={{width: width < 500 ? ("60%") : ("90%"), paddingTop: "50px"}}
                         />
                     </div>
 
-                    <div className="col" style={{height: "90vh"}}>
+                    <div className="col-12 col-md-6 col-lg-6 order-first order-sm-last" style={{height: width < 500 ? ("") : ("90vh")}}>
                         <img 
                             className="mt-5"
                             src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Flogo2.png?alt=media&token=7447933b-890f-4ddf-947f-ba7a455cb7cb" 
-                            // style={{width: width < 800 ? ("60%") : ("15%")}}    
+                            style={{width: width < 800 ? ("60%") : ("70%")}}   
                         />
 
                         <h1>สมัครบัญชี</h1>
@@ -237,7 +241,7 @@ const Register = ( {history} ) => {
                                 </Radio.Group>
 
                                 <Form.Item > 
-                                    <Button type="primary" htmlType="submit" style={{width: "300px"}}>
+                                    <Button type="primary" htmlType="submit" style={{width: "100%"}}>
                                         สมัครเลย !
                                     </Button><br/>
                                         มีบัญชีอยู่แล้ว ? <a href="/login">ลงชื่อเข้าใช้เลย !</a>

@@ -14,11 +14,10 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Home() {
-    const {width} = useWidth()
 
     const [ allFavorite, setAllFavorite ] = useState([])
     const [ myFavorite, setMyFavorite ] = useState([])
-    const { currentUser, userData, allEmployees, message } = useContext(AuthContext)
+    const { width, currentUser, userData, allEmployees, message } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -27,7 +26,9 @@ function Home() {
         },
         preContent: {
             height: width < 500 ? "30vh" : "30vh",
-            backgroundColor: "mediumpurple"
+            // backgroundColor: "mediumpurple",
+            paddingLeft: "10%", 
+            paddingRight: "10%",
         },
         Content: {
             height: width < 500 ? "62vh" : "61vh",
@@ -111,7 +112,8 @@ function Home() {
         })
         setAllFavorite(tempArr)
     }, [])
-    
+
+{/* //////////////////////  Get myFav */}
     useEffect(() => {
         setMyFavorite(userData? (userData.Favorite) : [] )
     }, [userData])
@@ -130,7 +132,11 @@ function Home() {
 
 {/* ////////////////////// Pre content*/}
             <div className="container-fluid mt-1 border border-danger" style={Style.preContent}>
-                xxxx
+                <h1>
+                    ยินดีต้อนรับท่านชาย "น้อง - นวบ - นาบ" เป็นบริการนวดสำหรับท่านชาย ที่ต้องการพักผ่อน ผ่อนคลายกล้ามเนื้อ เหนื่อยล้าจากการทำงาน ลกความเครียบด ผ่อนคลายปัญหาทางกาย และ ทางใจ
+                โดยทาง "น้อง - นวบ - นาบ" จะมีน้องๆ น่ารักน่าเอาใจใส่ มาช่วยผ่อนคลายท่านชายทั้งทางกายและทางใจ เชิญท่านเลือกน้องๆ ได้เลย
+                </h1>
+                
             </div>
 
 {/* ////////////////////// Map create น้องๆ path */}
@@ -191,21 +197,3 @@ function Home() {
 }
 
 export default Home
-
-const useWidth = () => {
-    const [ width, setWidth ] = useState(window.innerWidth)
-
-    const widthHandler =()=>{
-        setWidth(window.innerWidth)
-    }
-
-    useEffect(()=>{
-        window.addEventListener("resize", widthHandler)
-
-        return()=>{
-            window.removeEventListener("resize", widthHandler)
-        }
-    }, [])
-
-    return { width };
-}

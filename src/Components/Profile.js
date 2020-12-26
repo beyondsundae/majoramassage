@@ -24,7 +24,6 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Profile() {
-    // const {width} = useWidth()
 
     const inputFile = useRef(null) 
 
@@ -46,9 +45,9 @@ function Profile() {
     const [ changeAge, setChangeAge ] = useState("")
     const [ type, setType ] = useState("")
 
-    const [ collapse, setCollapse ] = useState(true)
+    const [ collapse, setCollapse ] = useState(false)
 
-    const { currentUser, userData, Modal, message } = useContext(AuthContext)
+    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
 
     const QueueOrderedDESC =  _.orderBy(userData.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
@@ -460,21 +459,3 @@ function Profile() {
 }
 
 export default Profile
-
-// const useWidth = () => {
-//     const [ width, setWidth ] = useState(window.innerWidth)
-
-//     const widthHandler =()=>{
-//         setWidth(window.innerWidth)
-//     }
-
-//     useEffect(()=>{
-//         window.addEventListener("resize", widthHandler)
-
-//         return()=>{
-//             window.removeEventListener("resize", widthHandler)
-//         }
-//     }, [])
-
-//     return { width };
-// }

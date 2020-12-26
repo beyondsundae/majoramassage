@@ -9,7 +9,6 @@ import { AuthContext } from "../Auth"
 
 var _ = require('lodash');
 function Header() {
-    const {width} = useWidth()
 
     const { SubMenu } = Menu;
 
@@ -18,7 +17,7 @@ function Header() {
     const Arrow = <CaretDownFilled style={{ fontSize: '20px'}}/>
     const Cart = <ShoppingCartOutlined style={{ fontSize: '30px' }}/>
 
-    const { currentUser, userData, allEmployees } = useContext(AuthContext)
+    const { width, currentUser, userData, allEmployees } = useContext(AuthContext)
 
     const FilterByNotDone = _.filter(userData? (userData.queue, ['status', "NotDone"]): null)// Filter หาที่มี status เป็น NotDone
 
@@ -89,21 +88,3 @@ function Header() {
 }
 
 export default Header
-
-const useWidth = () => {
-    const [ width, setWidth ] = useState(window.innerWidth)
-
-    const widthHandler =()=>{
-        setWidth(window.innerWidth)
-    }
-
-    useEffect(()=>{
-        window.addEventListener("resize", widthHandler)
-
-        return()=>{
-            window.removeEventListener("resize", widthHandler)
-        }
-    }, [])
-
-    return { width };
-}
