@@ -324,6 +324,19 @@ function Booking() {
 
 {/* //////////////////////  Action Function*/}   
     const setRateStars = async () => {
+
+        let sumStars = value.Review.Stars.BodyShape + value.Review.Stars.BodySkin + value.Review.Stars.Cuteness + value.Review.Stars.Friendly + value.Review.Stars.Massage
+        let finalStars = sumStars/5
+
+        console.log(finalStars)
+
+        setValue(
+            {Review: {
+                ...value.Review, 
+                totalStar: finalStars, 
+                
+        }})
+
         //เป็นการเอาข้อมูล Rating เขียนซ้อนไป ชายจะมีข้อมูลของหญิง หญิงจะมีข้อมูลของชาย ต้องสับขาเขียนทับ
         const userRef = firestore.collection("users").doc(userData.uid) //ใช้ uid เพื่ออิงถึง doc
         const user2Ref = firestore.collection("users").doc(info.ChiropactorKey) //ใช้ uid เพื่ออิงถึง doc
@@ -385,8 +398,8 @@ function Booking() {
                 user2Ref.set(objUser2)
                 msgSuccess()
 
-                // console.log(finalQueue)
-                // console.log(finalQueue2)
+                // console.log(objUser)
+                // console.log(objUser2)
             });
             
         } catch (err) {
@@ -419,8 +432,21 @@ function Booking() {
 useEffect(() => {
     let sumStars = value.Review.Stars.BodyShape + value.Review.Stars.BodySkin + value.Review.Stars.Cuteness + value.Review.Stars.Friendly + value.Review.Stars.Massage
     let finalStars = sumStars/5
+    // console.log(finalStars)
     setFinalStars(finalStars)
+    
 }, [value])
+
+{/* //////////////////////  Update value after setFinalstars / ถ้าไม่อัพดกทมันจะเป็น prev finalstars */}
+useEffect(() => {
+    // console.log(value)
+    setValue(
+        {Review: {
+            ...value.Review, 
+            totalStar: finalStars, 
+            
+    }})
+}, [finalStars]) 
 
 {/* //////////////////////  Modal Controller */}
     const showModal = (item) => {

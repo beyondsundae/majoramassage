@@ -231,8 +231,8 @@ const Register = ( {history} ) => {
                                     />
                                 </Form.Item>
 
-                                <Radio.Group onChange={onRadioChange} value={role} className="mb-3 text-left">
-                                    <Radio value="member">Register as member</Radio>
+                                <Radio.Group onChange={onRadioChange} value={role} className="mb-3 text-left ">
+                                    <Radio value="member">Register as member</Radio><br/>
                                     <Radio value="employee">Register as employee</Radio>
                                 </Radio.Group>
 
