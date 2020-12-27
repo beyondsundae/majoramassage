@@ -24,6 +24,7 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Profile() {
+    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
 
     const inputFile = useRef(null) 
 
@@ -47,8 +48,6 @@ function Profile() {
 
     const [ collapse, setCollapse ] = useState(false)
 
-    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
-
     const QueueOrderedDESC =  _.orderBy(userData.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
             const FilterReviewed = FilterByDone.filter(item => {
@@ -66,14 +65,14 @@ function Profile() {
 
     const Style = {
         Header: {
-            height: "8vh",
-            background: '#595959'
+            height: width < 500 ? "25vh" : "8vh",
+            background: '#444B54'
         },
         // preContent: {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "91vh",
+            height: width < 500 ? "74vh" : "91vh",
             // paddingLeft: "15%", 
             // paddingRight: "15%"
         }
@@ -254,17 +253,25 @@ function Profile() {
     }
 
 {/* ////////////////////// Get Photo when every update */}
-    useEffect(() => {
-      if(userData.role){
-        storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
-        .getDownloadURL()
-        .then((url) => {
-            setPic(url)
-      }).catch((err) => {
-        console.log(err)
-        msgError(err)
-      })
-    } 
+    useEffect(async() => {
+    //   if(userData.role){
+    //     storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
+    //     .getDownloadURL()
+    //     .then((url) => {
+    //         setPic(url)
+    //   }).catch((err) => {
+    //     console.log(err)
+    //     setPic(null)
+    //     msgError(err)
+    //   })
+    // } 
+
+    const userRef = firestore.collection("users").doc(userData.uid)
+
+    const getDoc = await userRef.get()
+    const objDoc = await getDoc.data()
+
+    setPic(objDoc.urlPhoto)
       
       tempPic()
     }, [userData.urlPhoto])
@@ -279,7 +286,7 @@ function Profile() {
                 <Header />
             </div>
 
-            <div className="container-fluid mt-1 text-center border border-danger" style={Style.Content}>
+            <div className="container-fluid mt-1 text-center" style={Style.Content}>
                 <div  className="row">
 
 {/* ////////////////////// Side Menu */}
@@ -339,9 +346,9 @@ function Profile() {
                             </div>
 
 {/* ////////////////////// Picture */}
-                            <div className="col-12 col-sm-12 col-md-12 col-lg-5 col-xl- mb-5">
+                            <div className="col-12 col-sm-12 col-md-6 col-lg-5 col-xl- mb-5">
                                 {pic ? (
-                                    loadingPic ? null : ( <img src={pic} style={{width: "40%"}} />) 
+                                    loadingPic ? null : ( <img src={pic} style={{maxWidth: width < 800 ? (width < 500 ? ("60%") : ("99%")) : "99%"}} />) 
                                 )  
                                 : (
                                     loadingPic ? null : ( <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" style={{width: "10%"}}/> ) 
@@ -350,7 +357,7 @@ function Profile() {
                             </div>
 
 {/* ////////////////////// Description */}
-                            <div className="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-  pl-5 ">
+                            <div className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-  pl-5 ">
                                 <Descriptions title="" className="" style={{marginLeft: "5vh"}}>
                                     <Descriptions.Item label="ชื่อผู้ใช้">{ userData? userData.displayName : null}</Descriptions.Item><br/><br/>
                                     {userData.role === "member"? (null) : ( 

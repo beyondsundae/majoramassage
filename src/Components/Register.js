@@ -11,13 +11,13 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { AuthContext } from "./Auth"
 
 const Register = ( {history} ) => {
+    const { currentUser, message, width } = useContext(AuthContext)
+
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ role, setRole ] = useState(null)
 
     const [ loading, setLoading ] = useState(true)
-
-    const { currentUser, message, width } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -113,9 +113,9 @@ const Register = ( {history} ) => {
       };
 
     useEffect(() => {
-        setTimeout(() => {
+        // setTimeout(() => {
             setLoading(false)
-        }, 2000);
+        // }, 2000);
     }, [])
 
     useEffect(() => {
@@ -131,15 +131,10 @@ const Register = ( {history} ) => {
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
                 <h1>
-                    {/* <div className="spinner-border" role="status">
-                    </div> */}
-
                     <img 
                         src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/loading%2F78e826ca1b9351214dfdd5e47f7e2024.gif?alt=media&token=38b92308-51b2-4574-a027-227975ba44ac"
                         style={{width: width < 800? ("100%") : ("50%")}}
                         />
-
-                    {/* <div className="mt-5">Loading . . . . (Register)</div> */}
                 </h1>
             </div>
         )

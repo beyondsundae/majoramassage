@@ -16,6 +16,8 @@ import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Information( {allEmployees} ) {
+    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
+
     const { Option, OptGroup } = Select;
     
     const [ myFavorite, setMyFavorite ] = useState([])
@@ -33,9 +35,6 @@ function Information( {allEmployees} ) {
 
     const [ progress, setProgress ] = useState(false)
 
-    const { currentUser, userData, Modal, message } = useContext(AuthContext)
-
-
     const QueueOrderedDESC =  _.orderBy(allEmployees.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
             const FilterReviewed = FilterByDone.filter(item => {
@@ -50,16 +49,16 @@ function Information( {allEmployees} ) {
 
     const Style = {
         Header: {
-            height: "7vh",
+            height: width < 500 ? "25vh" : "8vh",
             background: '#444B54'
         },
         // preContent: {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "92vh",
-            paddingLeft: "15%", 
-            paddingRight: "15%"
+            height: width < 500 ? "74vh" : "91vh",
+            paddingLeft: width < 800 ? "0%" : "15%", 
+            paddingRight: width < 800 ?"0%" : "15%"
         }
     }
 
@@ -286,8 +285,11 @@ function Information( {allEmployees} ) {
 {/* //////////////////////  Get queue */}
 
     const copyQueue =  () => {
-        // Get มาแค่ Date กับ Time ใส่ไว้ใน object
-        const final = allEmployees.queue.map((item, index) => {
+        // filter เอา status NotDone
+        // เอามาแค่ Date กับ Time ใส่ไว้ใน object
+
+        const FilterByDone = _.filter(allEmployees.queue, ['status', "NotDone"])
+        const final = FilterByDone.map((item, index) => {
             return {Date: item.Date, Time: item.Time}
         })
             setQueue(final)
@@ -313,12 +315,12 @@ function Information( {allEmployees} ) {
           </div>
 
           <div className="container-fluid mt-1 pt-3 text-center border border-danger" style={Style.Content}>
-              <div className="row">
+              <div className="row" style={{margin: "0px"}}>
 {/* ////////////////////// col left */}
-                <div className="col border border-danger" style={{height: "80vh"}}> 
+                <div className="col-12 col-sm-12 col-md-6 col-lg-6  border border-danger" style={{height: "80vh"}}> 
                     {
                         allEmployees.urlPhoto ? (
-                            <Image style={{maxWidth: "80%"}} src={allEmployees.urlPhoto}/>
+                            <Image style={{maxWidth: width < 800 ? (width < 500 ? ("99%") : ("99%")) : "99%"}} src={allEmployees.urlPhoto}/>
                         ) : (
                             <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png"/>
                         )
@@ -326,7 +328,7 @@ function Information( {allEmployees} ) {
                 </div>
 
 {/* ////////////////////// col Right */}
-                <div className="col border border-danger ">
+                <div className="col-12 col-sm-12 col-md-6 col-lg-6  border border-danger ">
                     <div className="row">
                         <div className='col-12 pt-3 text-left'>
                             <h1 style={{display: "inline"}}>น้อง { allEmployees? allEmployees.displayName : null}</h1>
@@ -407,7 +409,7 @@ function Information( {allEmployees} ) {
               </div>
 
 {/* ////////////////////// Review zone */}
-                <div className="col mt-5 border border-danger" style={{paddingLeft: "15%", paddingRight: "15%"}}>
+                <div className="col mt-1 border border-danger" style={{paddingLeft: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%", paddingRight: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%"}}>
                 {/* {FilterReviewed.length !== 0? ( */}
                     <Card
                     // key={index}

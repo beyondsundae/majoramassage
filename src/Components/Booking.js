@@ -14,8 +14,8 @@ import Header from "./Parts/Header"
 import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
-function Booking() {
-    const { currentUser, userData, Modal, message } = useContext(AuthContext)
+const Booking = () => {
+    const {  width, currentUser, userData, Modal, message } = useContext(AuthContext)
 
     const [ page, setPage ] = useState("1")
     const [ isModalVisible, setIsModalVisible ] = useState(false);
@@ -54,14 +54,15 @@ function Booking() {
 
     const Style = {
         Header: {
-            height: "7vh",
+            height: width < 500 ? "25vh" : "8vh",
             background: '#444B54'
         },
         // preContent: {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "92vh"
+            height: width < 500 ? "74vh" : "91vh",
+            margin: "0px",
         },
         CardOverflow: {
             width: "100%", 
@@ -95,7 +96,7 @@ function Booking() {
             // content: 'Some descriptions',
             okText: (Decision=="Reject"?('ยกเลิก'):('ยืนยัน')),
             okType: (Decision=="Reject"?('danger'):("#00caac")),
-            width:'30%',
+            width: width < 800 ? "100%" : "30%",
             cancelText: 'กลับไปก่อนหน้า',
            
             onOk() {

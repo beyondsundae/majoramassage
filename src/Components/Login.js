@@ -11,12 +11,12 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { AuthContext } from "./Auth"
 
 const Login = () => {
+    const { currentUser, message, width } = useContext(AuthContext)
+
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
     const [ loading, setLoading ] = useState(true)
-
-    const { currentUser, userData, message, width } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -46,9 +46,9 @@ const Login = () => {
                 msgSuccess("ยินดีต้อนรับ")
             })
 
-            setTimeout(() => {
+            // setTimeout(() => {
                 setLoading(false)
-            }, 2000)
+            // }, 2000)
         }
         catch(error){
             setPassword(" ")
@@ -56,34 +56,34 @@ const Login = () => {
         }
     }
 
-        {/* //////////////////////  Message */}
-        const msgSuccess = (item) => {
-            message.success({
-                content: (<h5 className="mt-5">{item}</h5>), 
-                duration: 3,
-                style: {
-                    marginTop: '8vh',
-                }})
-                .then()
-        }
+    {/* //////////////////////  Message */}
+    const msgSuccess = (item) => {
+        message.success({
+            content: (<h5 className="mt-5">{item}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+            .then()
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+    }
     
-        const msgError = (err) => {
-            message.error({
-                content: (<h5 className="mt-5">{err}</h5>), 
-                duration: 3,
-                style: {
-                    marginTop: '8vh',
-                }})
-        }
-    
-      const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
 
     useEffect(() => {
-        setTimeout(() => {
+        // setTimeout(() => {
             setLoading(false)
-        }, 1000);
+        // }, 500);
     }, [])
 
     if( currentUser ){
@@ -94,15 +94,10 @@ const Login = () => {
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
                 <h1>
-                    {/* <div className="spinner-border" role="status">
-                    </div> */}
-
                     <img 
                         src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/loading%2F78e826ca1b9351214dfdd5e47f7e2024.gif?alt=media&token=38b92308-51b2-4574-a027-227975ba44ac"
                         style={{width: width < 800? ("100%") : ("50%")}}
                         />
-
-                    {/* <div className="mt-5">Loading . . . . (Forgot)</div> */}
                 </h1>
             </div>
         )

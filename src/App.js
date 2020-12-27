@@ -50,7 +50,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <div>
+        <div className="App">
           
           <AdminRoute exact path="/admin" component={ AdminPage } />
 

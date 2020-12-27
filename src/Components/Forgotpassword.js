@@ -11,12 +11,12 @@ import { UserOutlined } from '@ant-design/icons';
 import { AuthContext } from "./Auth"
 
 const Forgotpassword = ({history}) => {
+    const { currentUser, message, width } = useContext(AuthContext)
+
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
 
     const [ loading, setLoading ] = useState(true)
-
-    const { currentUser, message, width } = useContext(AuthContext)
 
     const Style = {
         Header: {
@@ -57,7 +57,7 @@ const Forgotpassword = ({history}) => {
     {/* //////////////////////  Message */}
     const msgSuccess = () => {
         message.success({
-            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
+            content: (<h5 className="mt-5">กรุณาตรวจสอบอีเมลเพื่อเปลี่ยนรหัสผ่าน</h5>), 
             duration: 3,
             style: {
                 marginTop: '8vh',
@@ -80,9 +80,9 @@ const Forgotpassword = ({history}) => {
       };
 
     useEffect(() => {
-        setTimeout(() => {
+        // setTimeout(() => {
             setLoading(false)
-        }, 2000);
+        // }, 2000);
     }, [])
 
     if( currentUser ){
@@ -93,15 +93,10 @@ const Forgotpassword = ({history}) => {
         return(
             <div style={{textAlign: "center", marginTop: "150px"}}>
                 <h1>
-                    {/* <div className="spinner-border" role="status">
-                    </div> */}
-
                     <img 
                         src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/loading%2F78e826ca1b9351214dfdd5e47f7e2024.gif?alt=media&token=38b92308-51b2-4574-a027-227975ba44ac"
                         style={{width: width < 800? ("100%") : ("50%")}}
                         />
-
-                    {/* <div className="mt-5">Loading . . . . (Forgot)</div> */}
                 </h1>
             </div>
         )

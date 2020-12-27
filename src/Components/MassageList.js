@@ -10,6 +10,8 @@ import Header from "./Parts/Header"
 import { AuthContext } from "./Auth"
 
 function MassageList() {
+    const { width, currentUser, userData, message } = useContext(AuthContext)
+
     const { Column, ColumnGroup } = Table;
 
     const [ allMassageLitsts, setAllmassageLists ] = useState([])
@@ -17,19 +19,18 @@ function MassageList() {
 
     const [ finalAllMassageLitsts, setfinalAllMassageLitsts ] = useState([])
     const [ finalIndividiList, setfinalIndividiList ] = useState([])
-    
-    const { currentUser, userData, message } = useContext(AuthContext)
 
     const Style = {
         Header: {
-            height: "7vh",
+            height: width < 500 ? "25vh" : "8vh",
             background: '#444B54'
         },
         // preContent: {
         //     height: "30vh"
         // },
         Content: {
-            minHeight: "92vh"
+            height: width < 500 ? "62vh" : "61vh",
+            padding: "0px"
         }
     }
 
@@ -147,66 +148,59 @@ function MassageList() {
 
     return (
         <div>
-            <div className="container-fluid text-right border border-danger " style={Style.Header}>
+            <div className="container-fluid text-right" style={Style.Header}>
                 <Header />
             </div>
 
-            <div className="container-fluid mt-1 text-center  border border-danger" style={Style.Content}>
+            <div className="container-fluid mt-1 text-center" style={Style.Content}>
+                <div className="row justify-content-center ">
+                    <div style={{width: width < 500 ? "80%" : "50%"}}>
 
-                <div className="" >
-                    <div className="row justify-content-center ">
-                        <div style={{width: "50%"}}>
+                    <h2>ลิสต์การนวดในคลัง</h2>
 
-                        <h1>storeLists</h1>
+                    <Table dataSource={finalAllMassageLitsts}  pagination={false} rowKey="id" >
+                        <Column title="id" dataIndex="id" key="id" />
+                        <Column title="name" dataIndex="name" />
+                        <Column title="price" dataIndex="price"  />
+                        <Column
+                        title="Action"
+                        key="action"
+                        render={(text, record, index) => (
+                            <Space size="middle">
+                                <a style={{color: "green"}} onClick={() => { AddData(text) }}>เพิ่ม</a>
+                            </Space>
+                        )}
+                        />
+                    </Table>
+                    </div>
+                    
+                </div>
+                
 
-                        <Table dataSource={finalAllMassageLitsts}  pagination={false} rowKey="id" >
+                <Divider />
+
+                <div className="row justify-content-center ">
+                    <div style={{width: width < 500 ? "80%" : "50%"}}>
+
+                    <h2>ลิสต์การนวดของคุณ</h2>
+
+                        <Table dataSource={finalIndividiList} pagination={false} rowKey="id" >
                             <Column title="id" dataIndex="id" key="id" />
                             <Column title="name" dataIndex="name" />
                             <Column title="price" dataIndex="price"  />
                             <Column
                             title="Action"
                             key="action"
-                            render={(text, record, index) => (
+                            render={(text, record) => (
                                 <Space size="middle">
-                                    <a style={{color: "green"}} onClick={() => { AddData(text) }}>เพิ่ม</a>
+                                    <a style={{color: "red"}} onClick={() => { DeleteData(text)}}>ลบ</a>
                                 </Space>
                             )}
                             />
                         </Table>
-                        </div>
-                        
                     </div>
-                    
-
-                    <Divider />
-
-                    <div className="row justify-content-center ">
-                        <div style={{width: "50%"}}>
-
-                        <h1>individiList</h1>
-
-                            <Table dataSource={finalIndividiList} pagination={false} rowKey="id" >
-                                <Column title="id" dataIndex="id" key="id" />
-                                <Column title="name" dataIndex="name" />
-                                <Column title="price" dataIndex="price"  />
-                                <Column
-                                title="Action"
-                                key="action"
-                                render={(text, record) => (
-                                    <Space size="middle">
-                                        <a style={{color: "red"}} onClick={() => { DeleteData(text)}}>ลบ</a>
-                                    </Space>
-                                )}
-                                />
-                            </Table>
-                        </div>
-                    </div>
-
                 </div>
-                
-
             </div>
-            
         </div>
     )
 }

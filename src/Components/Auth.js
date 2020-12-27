@@ -18,30 +18,25 @@ export const AuthProvider = ({ children }) => {
 
     const userRef = firestore.collection("users")
 
-    useEffect(() => {
-        app
+    useEffect(async () => {
+       await app
         .auth()
-        .onAuthStateChanged((user)=>{
+        .onAuthStateChanged( (user)=>{
+            setCurrentUser(user)
+            
             if(user){
-                userRef.doc(user.uid)
+               userRef.doc(user.uid)
                 .onSnapshot((doc)=>{
                     if(doc.data()){
-                        const objDoc =  doc.data()
-                        // console.log(objDoc)
-                        // const userData = {
-                        //     uid: doc.data().uid,
-                        //     email: doc.data().email,
-                        //     role: doc.data().role,
-
-                        // }
+                        const objDoc = doc.data()
                         setUserData(objDoc)
                     }
                 })
             }
-            setCurrentUser(user)
+            
             setTimeout(() => {
-                setLoading(false)
-            }, 0);
+               setLoading(false)
+            }, 900);
             
         })
     }, [loading])
@@ -69,15 +64,23 @@ export const AuthProvider = ({ children }) => {
         // console.log(allEmployees)
     }, [allEmployees])
 
-    // if(loading){
-    //     return(
-    //         <div style={{textAlign: "center", marginTop: "150px"}}>
-    //             <h1>
-    //                 Loading . . . (Auth)
-    //             </h1>
-    //         </div>
-    //     )
-    // }
+    useEffect(() => {
+        console.time(currentUser)
+        console.timeEnd(currentUser)
+    }, [currentUser])
+
+    if(loading){
+        return(
+            <div style={{textAlign: "center", marginTop: "150px"}}>
+                <h1>
+                    <img 
+                        src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/loading%2F78e826ca1b9351214dfdd5e47f7e2024.gif?alt=media&token=38b92308-51b2-4574-a027-227975ba44ac"
+                        style={{width: width < 800? ("100%") : ("50%")}}
+                        />
+                </h1>
+            </div>
+        )
+    }
 
     return (
         <AuthContext.Provider value={{ width, currentUser, userData, allEmployees, Modal, message }}>

@@ -9,6 +9,7 @@ import { AuthContext } from "../Auth"
 
 var _ = require('lodash');
 function Header() {
+    const { width, currentUser, userData, allEmployees } = useContext(AuthContext)
 
     const { SubMenu } = Menu;
 
@@ -16,14 +17,12 @@ function Header() {
 
     const Arrow = <CaretDownFilled style={{ fontSize: '20px'}}/>
     const Cart = <ShoppingCartOutlined style={{ fontSize: '30px' }}/>
+    
 
-    const { width, currentUser, userData, allEmployees } = useContext(AuthContext)
-
-    const FilterByNotDone = _.filter(userData? (userData.queue, ['status', "NotDone"]): null)// Filter หาที่มี status เป็น NotDone
+    const FilterByNotDone = (userData? _.filter(userData.queue, ['status', "NotDone"]) : null ) // Filter หาที่มี status เป็น NotDone
 
     useEffect(() => {
-        
-
+        // console.log(userData.queue)
     }, [])
 
     return (
