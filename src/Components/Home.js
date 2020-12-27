@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
 
 import { message } from "antd";
 
@@ -227,6 +228,8 @@ function Home() {
                 })}
                  </div>   
             </div>
+
+            <Footer/>
         </div>
     )
 }

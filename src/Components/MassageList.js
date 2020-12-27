@@ -2,10 +2,13 @@ import React, { useEffect, useContext, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
+import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
+
 import { Table, Space, Divider } from "antd";
 // import { difference, intersection } from 'lodash';
 
-import Header from "./Parts/Header"
+
 
 import { AuthContext } from "./Auth"
 
@@ -201,6 +204,8 @@ function MassageList() {
                     </div>
                 </div>
             </div>
+            
+            <Footer/>
         </div>
     )
 }

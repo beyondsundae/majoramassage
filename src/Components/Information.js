@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
 
 import moment from "moment";
 import { List, Avatar, DatePicker, Space, Select, Button, Card, Comment, Divider, Empty, Image} from 'antd';
@@ -310,17 +311,17 @@ function Information( {allEmployees} ) {
 
     return (
         <div>
-          <div className="container-fluid text-right border border-danger " style={Style.Header}>
+          <div className="container-fluid text-right" style={Style.Header}>
             <Header />
           </div>
 
-          <div className="container-fluid mt-1 pt-3 text-center border border-danger" style={Style.Content}>
+          <div className="container-fluid mt-1 pt-3 text-center" style={Style.Content}>
               <div className="row" style={{margin: "0px"}}>
 {/* ////////////////////// col left */}
-                <div className="col-12 col-sm-12 col-md-6 col-lg-6  border border-danger" style={{height: "80vh"}}> 
+                <div className="col-12 col-sm-12 col-md-6 col-lg-6" style={{height: "80vh"}}> 
                     {
                         allEmployees.urlPhoto ? (
-                            <Image style={{maxWidth: width < 800 ? (width < 500 ? ("99%") : ("99%")) : "99%"}} src={allEmployees.urlPhoto}/>
+                            <Image style={{maxWidth: width < 800 ? (width < 500 ? ("99%") : ("99%")) : "89%"}} src={allEmployees.urlPhoto}/>
                         ) : (
                             <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png"/>
                         )
@@ -328,7 +329,7 @@ function Information( {allEmployees} ) {
                 </div>
 
 {/* ////////////////////// col Right */}
-                <div className="col-12 col-sm-12 col-md-6 col-lg-6  border border-danger ">
+                <div className="col-12 col-sm-12 col-md-6 col-lg-6 ">
                     <div className="row">
                         <div className='col-12 pt-3 text-left'>
                             <h1 style={{display: "inline"}}>น้อง { allEmployees? allEmployees.displayName : null}</h1>
@@ -409,7 +410,7 @@ function Information( {allEmployees} ) {
               </div>
 
 {/* ////////////////////// Review zone */}
-                <div className="col mt-1 border border-danger" style={{paddingLeft: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%", paddingRight: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%"}}>
+                <div className="col mt-1" style={{paddingLeft: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%", paddingRight: width < 800 ? (width < 500 ? ("0%") : ("10%")) : "0%"}}>
                 {/* {FilterReviewed.length !== 0? ( */}
                     <Card
                     // key={index}
@@ -432,6 +433,7 @@ function Information( {allEmployees} ) {
                             </>):(<h3>ยังไม่มีการรีวิว</h3>)}
                         </div>
                     }>
+                        <div style={{height: "70vh", overflow: "auto"}}>
                         {FilterReviewed.length !== 0?(
                             FilterReviewed.map((item) => {
                                 // console.log(item)
@@ -492,6 +494,7 @@ function Information( {allEmployees} ) {
 
                             )
                         })):(<Empty description="ไม่มีข้อมูล" className="my-5" />)}
+                        </div>
                     </Card>
                 </div>
             </div>
@@ -561,6 +564,8 @@ function Information( {allEmployees} ) {
                     </OptGroup>
                 </Select>
                 </Modal>
+
+            
         </div>
     )
 }

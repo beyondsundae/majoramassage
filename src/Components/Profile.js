@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState, useRef } from 'react'
 import app, { firestore, storage } from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
 
 import { Menu, Button, Divider, Descriptions, Select, message } from "antd";
 import {
@@ -348,7 +349,7 @@ function Profile() {
 {/* ////////////////////// Picture */}
                             <div className="col-12 col-sm-12 col-md-6 col-lg-5 col-xl- mb-5">
                                 {pic ? (
-                                    loadingPic ? null : ( <img src={pic} style={{maxWidth: width < 800 ? (width < 500 ? ("60%") : ("99%")) : "99%"}} />) 
+                                    loadingPic ? null : ( <img src={pic} style={{maxWidth: width < 800 ? (width < 500 ? ("60%") : ("99%")) : "80%"}} />) 
                                 )  
                                 : (
                                     loadingPic ? null : ( <img src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" style={{width: "10%"}}/> ) 
@@ -461,6 +462,8 @@ function Profile() {
                     </div>
                 </div>
             </div>
+            
+            <Footer/>
         </div>
     )
 }

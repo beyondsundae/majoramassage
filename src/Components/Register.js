@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 import app, { firestore }  from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
 
 import { Form, Input, Button, Radio  } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -246,6 +247,8 @@ const Register = ( {history} ) => {
                     </div>
                 </div>
             </div>
+            
+            <Footer/>
         </div>
     )
 }

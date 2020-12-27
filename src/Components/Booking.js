@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
 
+import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
+
 import { Card, Button, Tabs, Empty, Divider, Input } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 
 import { withStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-
-import Header from "./Parts/Header"
 
 import { AuthContext } from "./Auth"
 
@@ -620,6 +621,8 @@ useEffect(() => {
                     <h5 className="mt-5">ผู้รีวิว: {info? (info.Review.Reviewer):(null)}</h5>
                 </div>
             </Modal>
+
+            <Footer/>
         </div>
     )
 }

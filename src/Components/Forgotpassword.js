@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 import app from "../Firebase/firebase"
 
 import Header from "./Parts/Header"
+import Footer from "./Parts/Footer"
 
 import { Form, Input, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -170,6 +171,8 @@ const Forgotpassword = ({history}) => {
                 </div>
                 
             </div>
+            
+            <Footer/>
         </div>
     )
 }
