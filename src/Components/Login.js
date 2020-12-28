@@ -181,7 +181,7 @@ const Login = () => {
                                 </Form.Item>
 
                                 <Form.Item className="text-right">
-                                    <a  href="/forgot">
+                                    <a  href="#/forgot">
                                         ลืมรหัสผ่านใช่หรือไม่ ?
                                     </a>
                                 </Form.Item>
@@ -190,7 +190,7 @@ const Login = () => {
                                     <Button type="primary" htmlType="submit" style={{width: "100%"}}>
                                         ลงชื่อเข้าใช้
                                     </Button><br/>
-                                        หรือ ? <a href="/register">สมัครตอนนี้เลย!</a>
+                                        หรือ ? <a href="#/register">สมัครตอนนี้เลย!</a>
                                 </Form.Item>
                             </Form>
                         </div>

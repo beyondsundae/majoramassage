@@ -166,7 +166,7 @@ const Forgotpassword = ({history}) => {
                                     <Button type="primary" htmlType="submit" style={{width: "100%"}}>
                                         รีเซ็ทรหัสผ่าน
                                     </Button><br/>
-                                        มีบัญชีอยู่แล้ว ? <a href="/login">ลงชื่อเข้าใช้เลย !</a>
+                                        มีบัญชีอยู่แล้ว ? <a href="#/login">ลงชื่อเข้าใช้เลย !</a>
                                 </Form.Item>
                             </Form>
                         </div>

@@ -320,7 +320,7 @@ function Profile() {
                                     </Menu.Item>
 
                                     <Menu.Item key="4" icon={<OrderedListOutlined />}>
-                                        <a href="/masssagelists" >
+                                        <a href="#/masssagelists" >
                                             จัดการรายการนวด 
                                         </a>
                                     </Menu.Item>

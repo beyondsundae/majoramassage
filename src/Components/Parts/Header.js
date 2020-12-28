@@ -42,7 +42,7 @@ function Header() {
                         {userData? (
                             <>
                                 <Button size="large" className="mt-2 pt-3 mb- mr-4 text-white" style={{ border: "1px solid transparent", background: 'transparent'}}>
-                                    <a href="/booking">
+                                    <a href="#/booking">
                                         <Badge className="text-white" count={FilterByNotDone.length}>
                                             {Cart}
                                         </Badge>
@@ -72,16 +72,16 @@ function Header() {
                                                             <p className="d-inline ml-2 text-white">คุณ  { userData.displayName} </p>)): null)}
                                                 </div>} 
                                             title={<div className="d-inline ml-2">{Arrow}</div>}>
-                                                <Menu.Item key="setting:1" ><a href="/profile"><ProfileOutlined /> โปรไฟล์</a></Menu.Item>
+                                                <Menu.Item key="setting:1" ><a href="#/profile"><ProfileOutlined /> โปรไฟล์</a></Menu.Item>
                                                 <Menu.Item key="setting:2" onClick={() => {app.auth().signOut().then(() => window.location.reload())}}><LogoutOutlined /> Log out</Menu.Item>
                                         </SubMenu>
                                     </Menu>
                                 ) : (
                                     <p className="mt-4 mr-4">
-                                        <a href="/login" className="mr-4 text-white">
+                                        <a href="#/login" className="mr-4 text-white">
                                            <LoginOutlined /> เข้าสู่ระบบ
                                         </a>
-                                        <a href="/register" className="mr-2 text-white">
+                                        <a href="#/register" className="mr-2 text-white">
                                            <LoginOutlined /> สมัครบัญชี
                                         </a>
                                     </p>

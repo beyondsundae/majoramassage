@@ -158,7 +158,7 @@ function Home() {
 
                         return(
                         <>
-                            <a href={"/em/" + item.createed} key={index}>
+                            <a href={"#/em/" + item.createed} key={index}>
                                 <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
 
                                     {item.urlPhoto ? (

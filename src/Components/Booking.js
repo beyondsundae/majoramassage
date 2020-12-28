@@ -110,9 +110,9 @@ const Booking = () => {
     const onAction = (item, Decision) => {
         confirm({
             title: (Decision=="Reject"?(
-                <h4>ต้องการ{<h2 style={{color: "red", display: "inline"}}>ยกเลิก</h2>}รายการนี้ใช่หรือไม่</h4>
+                <h4>ต้องการ{<h2 style={{color: "red", display: "inline"}}>ยกเลิกเลย</h2>}รายการนี้ใช่หรือไม่</h4>
             ) : (
-                <h4>ต้องการ{<h2 style={{color: "#00caac", display: "inline"}}>ยืนยัน</h2>}รายการนี้ใช่หรือไม่</h4>
+                <h4>ต้องการ{<h2 style={{color: "#00caac", display: "inline"}}>ยืนยันเลย</h2>}รายการนี้ใช่หรือไม่</h4>
                 )),
             icon: (Decision=="Reject"?(
                 <ExclamationCircleTwoTone twoToneColor="red"/>
