@@ -75,7 +75,7 @@ const Login = () => {
         }
         catch(err){
             setPassword(" ")
-            msgError("อีเมลหรือรหัสผ่านไม่ถุกต้อง")
+            msgError("อีเมลหรือรหัสผ่านไม่ถูกต้อง")
         }
     }
     
