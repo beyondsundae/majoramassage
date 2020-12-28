@@ -14,18 +14,14 @@ import {
     FontColorsOutlined,
     PictureOutlined
   } from "@ant-design/icons";
-import Rating from "@material-ui/lab/Rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import { withStyles } from "@material-ui/core/styles";
 
 import ImageCropper from './ImageCropper'
-
 
 import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Profile() {
-    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
+    const { width, currentUser, userData, Rating, FavoriteIcon, withStyles, Modal, message } = useContext(AuthContext)
 
     const inputFile = useRef(null) 
 
@@ -74,13 +70,21 @@ function Profile() {
         // },
         Content: {
             height: width < 500 ? "74vh" : "91vh",
-            // paddingLeft: "15%", 
-            // paddingRight: "15%"
         },
         Footer: {
             paddingLeft: "10%",
             paddingRight: "10%"
         },
+    }
+
+{/* ////////////////////// message */}
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
     const StyledRating = withStyles({
@@ -186,7 +190,7 @@ function Profile() {
                     reader.readAsDataURL(file)
                     setIsModalVisible2(true);
                 } 
-            } else{ alert('Image must smaller than 5MB!')}
+            } else{ msgError('รูปต้องมีขนาดเล็กกว่า 5 Mb')}
         } else{ return null}
     }
 
@@ -247,29 +251,8 @@ function Profile() {
         }
     }
 
-{/* ////////////////////// message */}
-    const msgError = (err) => {
-        message.error({
-            content: (<h5 className="mt-5">{err}</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-            }})
-    }
-
 {/* ////////////////////// Get Photo when every update */}
     useEffect(async() => {
-    //   if(userData.role){
-    //     storage.child(userData.role + "/" + currentUser.uid + "/ProfilePic.jpg")
-    //     .getDownloadURL()
-    //     .then((url) => {
-    //         setPic(url)
-    //   }).catch((err) => {
-    //     console.log(err)
-    //     setPic(null)
-    //     msgError(err)
-    //   })
-    // } 
 
     const userRef = firestore.collection("users").doc(userData.uid)
 
@@ -469,10 +452,7 @@ function Profile() {
                 <div style={Style.Footer}>
                     <Footer />
                 </div>
-               
             </div>
-            
-           
         </div>
     )
 }

@@ -8,14 +8,12 @@ import Footer from "./Parts/Footer"
 import { Table, Space, Divider } from "antd";
 // import { difference, intersection } from 'lodash';
 
-
-
 import { AuthContext } from "./Auth"
 
 function MassageList() {
     const { width, currentUser, userData, message } = useContext(AuthContext)
 
-    const { Column, ColumnGroup } = Table;
+    const { Column } = Table;
 
     const [ allMassageLitsts, setAllmassageLists ] = useState([])
     const [ individiList, setindividiList ] = useState([])
@@ -40,7 +38,8 @@ function MassageList() {
             paddingRight: "10%"
         },
     }
-
+    
+{/* ////////////////////// message */}
     const msgError = (err) => {
         message.error({
             content: (<h5 className="mt-5">{err}</h5>), 
@@ -77,23 +76,17 @@ function MassageList() {
 
     //แจกข้อมูลไป 2 ส่วน :อันดับสอง
     useEffect(() => {
-
         //Show AllList which not occur in IndividualList (เอาเฉพาะ AllList ที่ไม่มีใน IndividualList) (Different)
         let finalAll = allMassageLitsts.filter(All => {
             return !individiList.some(Indivi => Indivi.id === All.id)})
-        // console.log("AllLeft", finalAll)
-
             setfinalAllMassageLitsts(finalAll)
 
         //Show IndividualList which not occur in AllList (เอาเฉพาะ IndividualList ที่มีใน AllList) (จริงๆไม่ได้มีก็ได้เพราะ แค่เอา List ของ พนักงานมาแสดง =____=) (Intersection)
         let finalIndivi = allMassageLitsts.filter(All => {
             return individiList.some(Indivi => Indivi.id === All.id)})
-        // console.log("IndiviLeft", finalIndivi)
-
             setfinalIndividiList(finalIndivi)
 
     }, [allMassageLitsts])
-
 
     useEffect(() => {
         // console.log(finalAllMassageLitsts)
@@ -102,12 +95,10 @@ function MassageList() {
 
     const AddData = async ( Selected ) => {
         try{
-
             const userRef = firestore.collection("users").doc(userData.uid)
             
             const getDoc = await userRef.get()
             const objDoc = await getDoc.data()
-           
 
             let tempArr = []
 
@@ -121,19 +112,17 @@ function MassageList() {
             userRef.set(obj) 
 
         } catch (err) {
-            console.log(err)
+            // console.log(err)
             msgError(err)
         }
     }
 
     const DeleteData = async ( Selected ) => {
         try{
-
             const userRef = firestore.collection("users").doc(userData.uid)
 
             const getDoc = await userRef.get()
             const objDoc = await getDoc.data()
-
            
             let finalDelete = finalIndividiList.filter(Indivi => {
                 return ![Selected].some(SelectedList => SelectedList.id === Indivi.id)
@@ -148,7 +137,7 @@ function MassageList() {
             userRef.set(obj)
 
         } catch (err) {
-            console.log(err)
+            // console.log(err)
             msgError(err)
         }
     }
@@ -180,9 +169,7 @@ function MassageList() {
                         />
                     </Table>
                     </div>
-                    
                 </div>
-                
 
                 <Divider />
 

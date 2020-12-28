@@ -8,15 +8,11 @@ import Footer from "./Parts/Footer"
 import { Card, Button, Tabs, Empty, Divider, Input } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone } from '@ant-design/icons';
 
-import { withStyles } from "@material-ui/core/styles";
-import Rating from "@material-ui/lab/Rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-
 import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 const Booking = () => {
-    const {  width, currentUser, userData, Modal, message } = useContext(AuthContext)
+    const {  width, currentUser, userData, Rating, FavoriteIcon, withStyles, Modal, message } = useContext(AuthContext)
 
     const [ page, setPage ] = useState("1")
     const [ isModalVisible, setIsModalVisible ] = useState(false);
@@ -76,6 +72,26 @@ const Booking = () => {
             overflow: "auto"
         }
     }
+
+{/* //////////////////////  Message */}
+    const msgSuccess = () => {
+        message.success({
+            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+              },});
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+              },});
+    }
+    
     const StyledRating = withStyles({
         iconFilled: {
           color: "#ff6d75"
@@ -416,25 +432,6 @@ const Booking = () => {
 
     }
 
-{/* //////////////////////  Message */}
-    const msgSuccess = () => {
-        message.success({
-            content: (<h5 className="mt-5">ยืนยันรายการสำเร็จ</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-              },});
-    }
-
-    const msgError = (err) => {
-        message.error({
-            content: (<h5 className="mt-5">{err}</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-              },});
-    }
-
 {/* //////////////////////  Sum Stars */}
 useEffect(() => {
     let sumStars = value.Review.Stars.BodyShape + value.Review.Stars.BodySkin + value.Review.Stars.Cuteness + value.Review.Stars.Friendly + value.Review.Stars.Massage
@@ -631,8 +628,6 @@ useEffect(() => {
                     <h5 className="mt-5">ผู้รีวิว: {info? (info.Review.Reviewer):(null)}</h5>
                 </div>
             </Modal>
-
-            
         </div>
     )
 }

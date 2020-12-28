@@ -35,7 +35,25 @@ const Register = ( {history} ) => {
             paddingLeft: width < 800 ? ("none") : ("10%"), 
             paddingRight: width < 800 ? ("none") : ("10%"), 
         },
+    }
 
+{/* ////////////////////// message */}
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+    }
+
+    const msgWarning = (err) => {
+        message.warning({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
     const handleRegister = async () => {
@@ -117,28 +135,8 @@ const Register = ( {history} ) => {
                 } else {
                     msgError("รหัสสมัครไม่ถูกต้อง")
                 }
-                
             }
-            
         } 
-    }
-
-    const msgError = (err) => {
-        message.error({
-            content: (<h5 className="mt-5">{err}</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-            }})
-    }
-
-    const msgWarning = (err) => {
-        message.warning({
-            content: (<h5 className="mt-5">{err}</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-            }})
     }
 
     const onRadioChange = e => {
@@ -160,8 +158,7 @@ const Register = ( {history} ) => {
     }, [])
 
     useEffect(() => {
-        console.log(role)
-
+        // console.log(role)
     }, [role])
 
     if( currentUser ){

@@ -15,7 +15,6 @@ const Forgotpassword = ({history}) => {
     const { currentUser, message, width } = useContext(AuthContext)
 
     const [ email, setEmail ] = useState('')
-    const [ password, setPassword ] = useState('')
 
     const [ loading, setLoading ] = useState(true)
 
@@ -33,6 +32,27 @@ const Forgotpassword = ({history}) => {
             paddingLeft: width < 800 ? ("none") : ("10%"), 
             paddingRight: width < 800 ? ("none") : ("10%"), 
         }
+    }
+
+{/* //////////////////////  Message */}
+    const msgSuccess = () => {
+        message.success({
+            content: (<h5 className="mt-5">กรุณาตรวจสอบอีเมลเพื่อเปลี่ยนรหัสผ่าน</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+                
+            }})
+            .then()
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
     const handleReset = async () => {
@@ -54,31 +74,10 @@ const Forgotpassword = ({history}) => {
             msgError("ไม่พบอีเมลนี้")
         }
     }
-
-    {/* //////////////////////  Message */}
-    const msgSuccess = () => {
-        message.success({
-            content: (<h5 className="mt-5">กรุณาตรวจสอบอีเมลเพื่อเปลี่ยนรหัสผ่าน</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-                
-            }})
-            .then()
-    }
-
-    const msgError = (err) => {
-        message.error({
-            content: (<h5 className="mt-5">{err}</h5>), 
-            duration: 3,
-            style: {
-                marginTop: '8vh',
-            }})
-    }
     
-      const onFinishFailed = (errorInfo) => {
+    const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
-      };
+    };
 
     useEffect(() => {
         // setTimeout(() => {

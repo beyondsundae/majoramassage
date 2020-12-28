@@ -30,8 +30,6 @@ function Information( {allEmployees} ) {
     const [ time, setTime ] = useState("")
     const [ DateTime, setDateTime ] = useState({Date:"", Time: ""})
 
-    const [ progress, setProgress ] = useState(false)
-
     const QueueOrderedDESC =  _.orderBy(allEmployees.queue, ["Date", "Time"], ["desc", "desc"])// เรียงวันล่าสุดมาก่อน
         const FilterByDone = _.filter(QueueOrderedDESC, ['status', "Done"])// Filter หาที่มี status เป็น Done
             const FilterReviewed = FilterByDone.filter(item => {
@@ -152,7 +150,6 @@ function Information( {allEmployees} ) {
         const chiropractorRef = firestore.collection("users").doc(allEmployees.uid)
 
         if(date && time !== ""){
-            setProgress(true)
             setstatusButt(true)
 
             try{
@@ -227,7 +224,6 @@ function Information( {allEmployees} ) {
                  await chiropractorRef.set(objChiropactor)
     
                         setIsModalVisible(false);
-                        setProgress(false)
                         setstatusButt(false)
 
                         msgSuccess()
@@ -561,8 +557,6 @@ function Information( {allEmployees} ) {
                     </OptGroup>
                 </Select>
                 </Modal>
-
-            
         </div>
     )
 }

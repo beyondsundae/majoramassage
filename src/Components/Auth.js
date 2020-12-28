@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from 'react'
 import app from "../Firebase/firebase"
 import { firestore } from '../Firebase/firebase'
 
-import { Modal, Button, message } from 'antd';
+import { Modal, message } from 'antd';
 
 import Rating from "@material-ui/lab/Rating";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -93,7 +93,6 @@ export const AuthProvider = ({ children }) => {
         
     )
 }
-
 
 const useWidth = () => {
     const [ width, setWidth ] = useState(window.innerWidth)

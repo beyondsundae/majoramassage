@@ -23,7 +23,6 @@ const Login = () => {
         Header: {
             height: width < 500 ? "25vh" : "8vh",
             background: '#444B54'
-
         },
         // preContent: {
         //     height: "30vh"
@@ -35,29 +34,7 @@ const Login = () => {
         }
     }
 
-    const handleLogin = async () => {
-        // event.preventDefault();
-        
-        try{
-            await app
-            .auth()
-            .signInWithEmailAndPassword( email, password)
-            .then(() => {
-                setLoading(true)
-                msgSuccess("ยินดีต้อนรับ")
-            })
-
-            // setTimeout(() => {
-                setLoading(false)
-            // }, 2000)
-        }
-        catch(error){
-            setPassword(" ")
-            alert(error)
-        }
-    }
-
-    {/* //////////////////////  Message */}
+{/* //////////////////////  Message */}
     const msgSuccess = (item) => {
         message.success({
             content: (<h5 className="mt-5">{item}</h5>), 
@@ -75,6 +52,26 @@ const Login = () => {
             style: {
                 marginTop: '8vh',
             }})
+    }
+
+    const handleLogin = async () => {
+        try{
+            await app
+            .auth()
+            .signInWithEmailAndPassword( email, password)
+            .then(() => {
+                setLoading(true)
+                msgSuccess("ยินดีต้อนรับ")
+            })
+
+            // setTimeout(() => {
+                setLoading(false)
+            // }, 2000)
+        }
+        catch(err){
+            setPassword(" ")
+            msgError(err)
+        }
     }
     
     const onFinishFailed = (errorInfo) => {
@@ -195,7 +192,7 @@ const Login = () => {
                         
                     </div>
                 </div>
-                
+
                 <div className="mt-5">
                     <Footer />
                 </div>

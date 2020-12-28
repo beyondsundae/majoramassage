@@ -10,7 +10,6 @@ import { AuthContext } from "./Auth"
 var _ = require('lodash');
 function Home() {
     const { width, currentUser, userData, allEmployees, Rating, FavoriteIcon, withStyles, message } = useContext(AuthContext)
-    const [ allFavorite, setAllFavorite ] = useState([])
     const [ myFavorite, setMyFavorite ] = useState([])
 
     const Style = {
@@ -100,22 +99,13 @@ function Home() {
             }})
     }
 
-{/* ////////////////////// Get Allemployees */}
-    useEffect(() => {
-        let tempArr = []
-        allEmployees.forEach((item) => {
-           tempArr = [...tempArr, {createed:item.createed}]
-        })
-        setAllFavorite(tempArr)
-    }, [])
-
 {/* //////////////////////  Get myFav */}
     useEffect(() => {
         setMyFavorite(userData? (userData.Favorite) : [] )
     }, [userData])
 
     useEffect(() => {
-        console.log(allEmployees)
+        // console.log(allEmployees)
     }, [allEmployees])
     
     return (
@@ -165,26 +155,28 @@ function Home() {
                         <>
                             <a href={"/em/" + item.createed} key={index}>
                                 <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
-                                {item.urlPhoto ? (
-                                    <img className="card-img-top" src={item.urlPhoto} />
-                                ) : (
-                                    <img className="card-img-top" src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
+                                
+                                    {item.urlPhoto ? (
+                                        <img className="card-img-top" src={item.urlPhoto} />
+                                    ) : (
+                                        <img className="card-img-top" src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
 
-                                )}
-                                <div className="card-body text-left text-dark">
-                                    <h4 className="card-title">น้อง {item.displayName}</h4>
-                                    <p className="card-title">อายุ {item.age}</p>
-                                    <p className="card-title">จำนวนผู้เข้าใช้บริการ {FilterByDone === []? 0 : FilterByDone.length}</p>
-                                        {FilterReviewed.length !== 0?(
-                                            <p style={{color: "#ff6d75"}}>{finalStar}: { allEmployees? (<StyledRating
-                                                className="mt-1"
-                                                size="small"
-                                                precision={0.1}
-                                                value={finalStar}
-                                                icon={<FavoriteIcon fontSize="inherit" />}
-                                                readOnly
-                                            />) : null}</p>):(<p>ยังไม่มีการรีวิว</p>)}
-                                </div>
+                                    )}
+
+                                    <div className="card-body text-left text-dark">
+                                        <h4 className="card-title">น้อง {item.displayName}</h4>
+                                        <p className="card-title">อายุ {item.age}</p>
+                                        <p className="card-title">จำนวนผู้เข้าใช้บริการ {FilterByDone === []? 0 : FilterByDone.length}</p>
+                                            {FilterReviewed.length !== 0?(
+                                                <p style={{color: "#ff6d75"}}>{finalStar}: { allEmployees? (<StyledRating
+                                                    className="mt-1"
+                                                    size="small"
+                                                    precision={0.1}
+                                                    value={finalStar}
+                                                    icon={<FavoriteIcon fontSize="inherit" />}
+                                                    readOnly
+                                                />) : null}</p>):(<p>ยังไม่มีการรีวิว</p>)}
+                                    </div>
 
     {/* ////////////////////// Favorite zone */}
                                 <div className="text-right mr-3">

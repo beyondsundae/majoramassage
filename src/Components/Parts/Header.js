@@ -13,11 +13,8 @@ function Header() {
 
     const { SubMenu } = Menu;
 
-    const [ pixelValue, setPixelValue ] = useState("")
-
     const Arrow = <CaretDownFilled style={{ fontSize: '20px'}}/>
     const Cart = <ShoppingCartOutlined style={{ fontSize: '30px' }}/>
-    
 
     const FilterByNotDone = (userData? _.filter(userData.queue, ['status', "NotDone"]) : null ) // Filter หาที่มี status เป็น NotDone
 

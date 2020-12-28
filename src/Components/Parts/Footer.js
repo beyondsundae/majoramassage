@@ -33,7 +33,6 @@ function Footer() {
                     
                 </a><br/>
                 <strong className="px-4 text-white">May the knowledge and Intention be with those who work hard ❤️ </strong>
-                
            </div>
         </div>
     )
