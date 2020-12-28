@@ -4,6 +4,10 @@ import { firestore } from '../Firebase/firebase'
 
 import { Modal, Button, message } from 'antd';
 
+import Rating from "@material-ui/lab/Rating";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import { withStyles } from "@material-ui/core/styles";
+
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ children }) => {
@@ -83,7 +87,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ width, currentUser, userData, allEmployees, Modal, message }}>
+        <AuthContext.Provider value={{ width, currentUser, userData, allEmployees, Rating, FavoriteIcon, withStyles, Modal, message }}>
             {children}
         </AuthContext.Provider>
         

@@ -76,7 +76,11 @@ function Profile() {
             height: width < 500 ? "74vh" : "91vh",
             // paddingLeft: "15%", 
             // paddingRight: "15%"
-        }
+        },
+        Footer: {
+            paddingLeft: "10%",
+            paddingRight: "10%"
+        },
     }
 
     const StyledRating = withStyles({
@@ -461,9 +465,14 @@ function Profile() {
                         </Modal>
                     </div>
                 </div>
+
+                <div style={Style.Footer}>
+                    <Footer />
+                </div>
+               
             </div>
             
-            <Footer/>
+           
         </div>
     )
 }

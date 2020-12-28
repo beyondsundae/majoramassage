@@ -35,8 +35,6 @@ const App = () => {
             tempArr = [ ...tempArr, doc.data() ]
             // get from collection must foreach before use them T__T remember remember
         })
-
-        // console.log( tempArr )
         
         setAllEmployees(tempArr)
     })

@@ -5,17 +5,11 @@ import app, { firestore, storage } from "../Firebase/firebase"
 import Header from "./Parts/Header"
 import Footer from "./Parts/Footer"
 
-import { message } from "antd";
-
-import Rating from "@material-ui/lab/Rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import { withStyles } from "@material-ui/core/styles";
-
 import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Home() {
-    const { width, currentUser, userData, allEmployees, message } = useContext(AuthContext)
+    const { width, currentUser, userData, allEmployees, Rating, FavoriteIcon, withStyles, message } = useContext(AuthContext)
     const [ allFavorite, setAllFavorite ] = useState([])
     const [ myFavorite, setMyFavorite ] = useState([])
 
@@ -35,7 +29,8 @@ function Home() {
             // overflow: "auto",
             paddingLeft: "10%", 
             paddingRight: "10%",
-        }
+        },
+        
     }
     const StyledRating = withStyles({
         iconFilled: {
@@ -119,9 +114,9 @@ function Home() {
         setMyFavorite(userData? (userData.Favorite) : [] )
     }, [userData])
 
-    // useEffect(() => {
-    //     console.log(myFavorite)
-    // }, [myFavorite])
+    useEffect(() => {
+        console.log(allEmployees)
+    }, [allEmployees])
     
     return (
         <div>
@@ -148,88 +143,87 @@ function Home() {
                         src="https://firebasestorage.googleapis.com/v0/b/majoramassage.appspot.com/o/logo%2Fbikini.svg?alt=media&token=bbc3e7b6-55cc-4fce-b1d5-d5cfb1c809b0"
                         style={{width: width < 800 ? (width < 500 ? ("30%") : ("65%")) : ("28%")}} />
                     </div>
-
                 </div>
-               
-                
             </div>
 
 {/* ////////////////////// Map create น้องๆ path */}
-            <div className="container-fluid mt-1 text-center" style={Style.Content}>
+        <div className="container-fluid mt-1 text-center" style={Style.Content}>
             <h3 className="my-3 text-left">น้องๆ หมอนวดน่าสนใจ</h3>
                 <div className="row text-center"> 
-                {allEmployees.map((item, index) => {
+                    {allEmployees.map((item, index) => {
 
-                    const FilterByDone = _.filter(item.queue, ['status', "Done"])
-                        const FilterReviewed = FilterByDone.filter(item => {
-                            return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
-                            })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
-                                const sumStar = FilterReviewed.reduce((prev, item)=>{
-                                    return(item.Review.totalStar + prev )
-                                    }, 0)// sum star ที่งหมด
-                                    const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 ) // หารให้เต็ม 5 
+                        const FilterByDone = _.filter(item.queue, ['status', "Done"])
+                            const FilterReviewed = FilterByDone.filter(item => {
+                                return ![{totalStar: null}].some(NullStar => NullStar.totalStar === item.Review.totalStar)
+                                })// Different หาคืวที่มีการให้คะแนนแล้ว เพื่อจะเอาไปแสดงในช่องรีวิว
+                                    const sumStar = FilterReviewed.reduce((prev, item)=>{
+                                        return(item.Review.totalStar + prev )
+                                        }, 0)// sum star ที่งหมด
+                                        const finalStar = (sumStar/FilterReviewed.length).toFixed( 1 ) // หารให้เต็ม 5 
 
-                    return(
+                        return(
                         <>
-                        <a href={"/em/" + item.createed} key={index}>
-                             <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
-                            {item.urlPhoto ? (
-                                <img className="card-img-top" src={item.urlPhoto} />
-                            ) : (
-                                <img className="card-img-top" src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
+                            <a href={"/em/" + item.createed} key={index}>
+                                <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
+                                {item.urlPhoto ? (
+                                    <img className="card-img-top" src={item.urlPhoto} />
+                                ) : (
+                                    <img className="card-img-top" src="https://icons-for-free.com/iconfiles/png/512/instagram+person+profile+icon-1320184028516722357.png" />
 
-                            )}
-                            <div className="card-body text-left text-dark">
-                                <h4 className="card-title">น้อง {item.displayName}</h4>
-                                <p className="card-title">อายุ {item.age}</p>
-                                <p className="card-title">จำนวนผู้เข้าใช้บริการ {FilterByDone === []? 0 : FilterByDone.length}</p>
-                                    {FilterReviewed.length !== 0?(
-                                        <p style={{color: "#ff6d75"}}>{finalStar}: { allEmployees? (<StyledRating
-                                            className="mt-1"
-                                            size="small"
-                                            precision={0.1}
-                                            value={finalStar}
-                                            icon={<FavoriteIcon fontSize="inherit" />}
-                                            readOnly
-                                        />) : null}</p>):(<p>ยังไม่มีการรีวิว</p>)}
-                            </div>
+                                )}
+                                <div className="card-body text-left text-dark">
+                                    <h4 className="card-title">น้อง {item.displayName}</h4>
+                                    <p className="card-title">อายุ {item.age}</p>
+                                    <p className="card-title">จำนวนผู้เข้าใช้บริการ {FilterByDone === []? 0 : FilterByDone.length}</p>
+                                        {FilterReviewed.length !== 0?(
+                                            <p style={{color: "#ff6d75"}}>{finalStar}: { allEmployees? (<StyledRating
+                                                className="mt-1"
+                                                size="small"
+                                                precision={0.1}
+                                                value={finalStar}
+                                                icon={<FavoriteIcon fontSize="inherit" />}
+                                                readOnly
+                                            />) : null}</p>):(<p>ยังไม่มีการรีวิว</p>)}
+                                </div>
 
-{/* ////////////////////// Favorite zone */}
-                            <div className="text-right mr-3">
-                                {userData? ( userData.role === "member"? (
-                                    <StyledRating
-                                        key={index}
-                                        size="large"
-                                        value={
-                                            userData.role === "member"? (
-                                                myFavorite.some((itemx)=>{
-                                                    if(itemx.createed === item.createed){ return true } //Return True if there are in myFav
-                                                })
-                                            ) : false
-                                        }
-                                        max="1"
-                                        precision={1}
-                                        onChange={(event, newValue) =>{
-                                            if(newValue === null){
-                                                unFavAction(item, newValue, index)
-                                            } else {
-                                                FavAction(item, newValue, index)
+    {/* ////////////////////// Favorite zone */}
+                                <div className="text-right mr-3">
+                                    {userData? ( userData.role === "member"? (
+                                        <StyledRating
+                                            key={index}
+                                            size="large"
+                                            value={
+                                                userData.role === "member"? (
+                                                    myFavorite.some((itemx)=>{
+                                                        if(itemx.createed === item.createed){ return true } //Return True if there are in myFav
+                                                    })
+                                                ) : false
                                             }
-                                        }} //Initial is null After click is 1
-                                        icon={<FavoriteIcon fontSize="inherit" />}
-                                    /> 
-                                ) : null) : null}
-                                
-                            </div>
-                        </div>
-                        </a>
-                       </>
-                    )
-                })}
-                 </div>   
-            </div>
+                                            max="1"
+                                            precision={1}
+                                            onChange={(event, newValue) =>{
+                                                if(newValue === null){
+                                                    unFavAction(item, newValue, index)
+                                                } else {
+                                                    FavAction(item, newValue, index)
+                                                }
+                                            }} //Initial is null After click is 1
+                                            icon={<FavoriteIcon fontSize="inherit" />}
+                                        /> 
+                                    ) : null) : null}
+                                    
+                                </div>
+                                </div>
+                            </a>
+                        </>
+                        )
+                    })}
+                </div>   
 
-            <Footer/>
+                <div className="mt-5">
+                    <Footer />
+                </div>
+            </div>
         </div>
     )
 }

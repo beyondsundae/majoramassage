@@ -62,8 +62,12 @@ const Booking = () => {
         //     height: "30vh"
         // },
         Content: {
-            height: width < 500 ? "74vh" : "91vh",
+            height: width < 500 ? "99vh" : "91vh",
             margin: "0px",
+        },
+        Footer: {
+            paddingLeft: "10%",
+            paddingRight: "10%"
         },
         CardOverflow: {
             width: "100%", 
@@ -472,11 +476,11 @@ useEffect(() => {
 
     return (
         <div>
-            <div className="container-fluid text-right border border-danger " style={Style.Header}>
+            <div className="container-fluid text-right" style={Style.Header}>
                 <Header />
             </div>
 
-            <div className="container-fluid row justify-content-center text-center border border-danger" style={Style.Content}>
+            <div className="container-fluid row justify-content-center text-center" style={Style.Content}>
 
 {/* //////////////////////  Reuse Card map */}    
                 <Tabs activeKey={page} onChange={(activeKey) => setPage(activeKey)} size="large" className="my-4" style={{ width: "100vh" }}>
@@ -496,6 +500,12 @@ useEffect(() => {
                         </div>
                     </TabPane>
                 </Tabs>
+
+               
+            </div>
+
+            <div style={Style.Footer}>
+                <Footer />
             </div>
 
 {/* //////////////////////  Modal RatingStars */}    
@@ -616,13 +626,13 @@ useEffect(() => {
                             <Divider orientation="center"><h5>คะแนนรวม: {finalStars} <FavoriteIcon style={{color: "#ff6d75"}}/></h5> </Divider>
 
                     <h5 className="mt-5">ความคิดเห็นเพิ่มเติม</h5>
-                    <TextArea rows={4} value={value.Review.Comment} onChange={(e)=>setValue({Review:{...value.Review, Comment: e.target.value}})} />
+                    <TextArea rows={4} value={value.Review.Comment} showCount maxLength={100} onChange={(e)=>setValue({Review:{...value.Review, Comment: e.target.value}})} />
 
                     <h5 className="mt-5">ผู้รีวิว: {info? (info.Review.Reviewer):(null)}</h5>
                 </div>
             </Modal>
 
-            <Footer/>
+            
         </div>
     )
 }

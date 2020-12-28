@@ -17,6 +17,7 @@ const Register = ( {history} ) => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
     const [ role, setRole ] = useState(null)
+    const [ secretCode, setsecretCode ] = useState(null)
 
     const [ loading, setLoading ] = useState(true)
 
@@ -31,16 +32,15 @@ const Register = ( {history} ) => {
         // },
         Content: {
             height: width < 500 ? "62vh" : "61vh",
-            paddingLeft: width < 800 ? ("none") : ("15%"), 
-            paddingRight: width < 800 ? ("none") : ("15%"), 
-        }
+            paddingLeft: width < 800 ? ("none") : ("10%"), 
+            paddingRight: width < 800 ? ("none") : ("10%"), 
+        },
+
     }
 
     const handleRegister = async () => {
 
-        if(role == null){
-            alert(" plz select role")
-        } else {
+        const submitRegister = async () => {
             try{
                 await app
                 .auth()
@@ -87,27 +87,67 @@ const Register = ( {history} ) => {
                 })
             } 
             catch(error) {
-                console.log(error)
+                // console.log(error)
     
                 if(error.code == "auth/email-already-in-use"){
                     setLoading(true)
-                    alert(error.message) 
+                    msgWarning("อีเมลนีได้ถูกใช้แล้ว")
                     
                     setTimeout(() => {
                         setLoading(false)
-                        history.push("/login")
+                        // history.push("/login")
+                        // window.location.reload()
                     }, 2000);
                     
                 } else {
-                    alert(error.message)
+                    msgError(error.message)
                 }
             }
+        }
+
+        if(role === null){
+            msgWarning("กรุณาเลือกประเภทของบัญชีก่อน")
+        } else {
+            // secretCode
+            if(role === "member"){
+                submitRegister()
+            } else if (role === "employee"){
+                if( secretCode === "beemployee"){
+                    submitRegister()
+                } else {
+                    msgError("รหัสสมัครไม่ถูกต้อง")
+                }
+                
+            }
+            
         } 
+    }
+
+    const msgError = (err) => {
+        message.error({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
+    }
+
+    const msgWarning = (err) => {
+        message.warning({
+            content: (<h5 className="mt-5">{err}</h5>), 
+            duration: 3,
+            style: {
+                marginTop: '8vh',
+            }})
     }
 
     const onRadioChange = e => {
         setRole(e.target.value);
       };
+    
+    const onsecretCodeChange = e => {
+        setsecretCode(e.target.value);
+    };
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -231,9 +271,11 @@ const Register = ( {history} ) => {
                                     />
                                 </Form.Item>
 
-                                <Radio.Group onChange={onRadioChange} value={role} className="mb-3 text-left ">
-                                    <Radio value="member">Register as member</Radio><br/>
-                                    <Radio value="employee">Register as employee</Radio>
+                                <Radio.Group value={role} onChange={onRadioChange} className="mb-3 text-left ">
+                                    <Radio value="member">สมัครเป็นผู้มาใช้บริการ</Radio><br/>
+                                    <Radio value="employee">สมัครเป็นน้องๆ</Radio>
+                                    { role === "employee" ? (<Input value={secretCode} onChange={onsecretCodeChange} placeholder="ใส่รหัสสำหรับสมัครเป็นน้องๆ" />) : null}
+                                    
                                 </Radio.Group>
 
                                 <Form.Item > 
@@ -246,9 +288,11 @@ const Register = ( {history} ) => {
                         </div>
                     </div>
                 </div>
+
+                <div className="mt-5">
+                    <Footer />
+                </div>
             </div>
-            
-            <Footer/>
         </div>
     )
 }

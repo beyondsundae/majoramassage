@@ -30,8 +30,8 @@ const Login = () => {
         // },
         Content: {
             height: width < 500 ? "62vh" : "61vh",
-            paddingLeft: width < 800 ? ("none") : ("15%"), 
-            paddingRight: width < 800 ? ("none") : ("15%"), 
+            paddingLeft: width < 800 ? ("none") : ("10%"), 
+            paddingRight: width < 800 ? ("none") : ("10%"), 
         }
     }
 
@@ -196,9 +196,10 @@ const Login = () => {
                     </div>
                 </div>
                 
+                <div className="mt-5">
+                    <Footer />
+                </div>
             </div>
-            
-            <Footer/>
         </div>
     )
 }

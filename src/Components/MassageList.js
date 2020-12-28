@@ -32,9 +32,13 @@ function MassageList() {
         //     height: "30vh"
         // },
         Content: {
-            height: width < 500 ? "62vh" : "61vh",
+            height: width < 500 ? "62vh" : "81vh",
             padding: "0px"
-        }
+        },
+        Footer: {
+            paddingLeft: "10%",
+            paddingRight: "10%"
+        },
     }
 
     const msgError = (err) => {
@@ -204,8 +208,10 @@ function MassageList() {
                     </div>
                 </div>
             </div>
-            
-            <Footer/>
+
+            <div style={Style.Footer}>
+                <Footer />
+            </div>
         </div>
     )
 }

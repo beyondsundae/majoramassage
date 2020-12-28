@@ -9,15 +9,11 @@ import moment from "moment";
 import { List, Avatar, DatePicker, Space, Select, Button, Card, Comment, Divider, Empty, Image} from 'antd';
 import { BookOutlined } from '@ant-design/icons';
 
-import { withStyles } from "@material-ui/core/styles";
-import Rating from "@material-ui/lab/Rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-
 import { AuthContext } from "./Auth"
 
 var _ = require('lodash');
 function Information( {allEmployees} ) {
-    const { width, currentUser, userData, Modal, message } = useContext(AuthContext)
+    const { width, currentUser, userData, Rating, FavoriteIcon, withStyles, Modal, message } = useContext(AuthContext)
 
     const { Option, OptGroup } = Select;
     
@@ -58,8 +54,8 @@ function Information( {allEmployees} ) {
         // },
         Content: {
             height: width < 500 ? "74vh" : "91vh",
-            paddingLeft: width < 800 ? "0%" : "15%", 
-            paddingRight: width < 800 ?"0%" : "15%"
+            paddingLeft: width < 800 ? "0%" : "10%", 
+            paddingRight: width < 800 ?"0%" : "10%"
         }
     }
 
@@ -497,6 +493,7 @@ function Information( {allEmployees} ) {
                         </div>
                     </Card>
                 </div>
+                <Footer />
             </div>
 
 {/* ////////////////////// Modal */}

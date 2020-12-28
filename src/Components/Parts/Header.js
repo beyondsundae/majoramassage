@@ -76,8 +76,11 @@ function Header() {
                                     </Menu>
                                 ) : (
                                     <p className="mt-4 mr-4">
-                                        <a href="/login" className=" text-white">
-                                           <LoginOutlined /> Log In
+                                        <a href="/login" className="mr-4 text-white">
+                                           <LoginOutlined /> เข้าสู่ระบบ
+                                        </a>
+                                        <a href="/register" className="mr-2 text-white">
+                                           <LoginOutlined /> สมัครบัญชี
                                         </a>
                                     </p>
                                 )}

@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Avatar } from 'antd';
 
+import { AuthContext } from "../Auth"
 function Footer() {
+
+    const { width, currentUser, userData, allEmployees } = useContext(AuthContext)
+
     const Style = {
         Footer: {
-            height:  "10vh",
+            height:  width < 500 ? "25vh" : "10vh",
             background: '#444B54'
         },
         
