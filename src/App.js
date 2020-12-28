@@ -5,7 +5,7 @@
 
 import React,{ useState, useEffect} from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import { firestore } from './Firebase/firebase'
 
 import { AuthProvider } from "./Components/Auth";
