@@ -1,3 +1,8 @@
+// © 2020 Copyright: NongNuabNaab.com 
+// By beyondsundae (Thanakrit)
+
+// May the knowledge and Intention be with those who work hard ❤️ 
+
 import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
@@ -155,7 +160,7 @@ function Home() {
                         <>
                             <a href={"/em/" + item.createed} key={index}>
                                 <div className="card mx-5 my-5 text-center" style={{width: "13rem"}} > 
-                                
+
                                     {item.urlPhoto ? (
                                         <img className="card-img-top" src={item.urlPhoto} />
                                     ) : (

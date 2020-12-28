@@ -1,3 +1,8 @@
+// © 2020 Copyright: NongNuabNaab.com 
+// By beyondsundae (Thanakrit)
+
+// May the knowledge and Intention be with those who work hard ❤️ 
+
 import React, { useContext, useEffect, useState } from 'react'
 
 import app, { firestore, storage } from "../Firebase/firebase"
@@ -91,7 +96,7 @@ const Booking = () => {
                 marginTop: '8vh',
               },});
     }
-    
+
     const StyledRating = withStyles({
         iconFilled: {
           color: "#ff6d75"

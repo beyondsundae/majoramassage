@@ -1,3 +1,8 @@
+// © 2020 Copyright: NongNuabNaab.com 
+// By beyondsundae (Thanakrit)
+
+// May the knowledge and Intention be with those who work hard ❤️ 
+
 import React, { useContext } from 'react'
 import { Avatar } from 'antd';
 

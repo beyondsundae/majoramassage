@@ -1,3 +1,8 @@
+// © 2020 Copyright: NongNuabNaab.com 
+// By beyondsundae (Thanakrit)
+
+// May the knowledge and Intention be with those who work hard ❤️ 
+
 import React,{ useState, useEffect} from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route } from "react-router-dom";
