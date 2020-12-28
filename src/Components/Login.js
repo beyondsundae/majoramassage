@@ -75,7 +75,7 @@ const Login = () => {
         }
         catch(err){
             setPassword(" ")
-            msgError(err)
+            msgError("อีเมลหรือรหัสผ่านไม่ถุกต้อง")
         }
     }
     
