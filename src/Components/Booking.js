@@ -517,7 +517,7 @@ useEffect(() => {
                 onOk={handleOk} 
                 onCancel={handleCancel}
                 closable={false}
-                width="40%"
+                width= {width < 800 ? width < 500 ? "100%" : "85%" : "40%"}
                 footer={[
                     <Button key="back" onClick={handleCancel}>
                       ย้อนกลับ
@@ -532,10 +532,12 @@ useEffect(() => {
                         <div className="col-4">
                             <img src={info.ChiropactorPic || info.MemberPic} className="mx-5" style={{width: "150px"}} />
                         </div>
-                        <div className="col-8 pt-3">
+
+                        <div className="col-12  col-md-8 col-lg-  pt-3">
                             <div className="col-12  ">
                                 <h3>{info.name}</h3>
                             </div>
+
                             <div className="col-12 ">
                                 {userData.role !== "member"? (
                                     <h5>คุณ {info.MemberName}</h5>
