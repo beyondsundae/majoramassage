@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/majoramassage/static/css/main.15bf7ee9.chunk.css",
+    "main.js": "/majoramassage/static/js/main.bcc97b22.chunk.js",
+    "main.js.map": "/majoramassage/static/js/main.bcc97b22.chunk.js.map",
+    "runtime-main.js": "/majoramassage/static/js/runtime-main.f1721f15.js",
+    "runtime-main.js.map": "/majoramassage/static/js/runtime-main.f1721f15.js.map",
+    "static/css/2.b00201c5.chunk.css": "/majoramassage/static/css/2.b00201c5.chunk.css",
+    "static/js/2.4eb7c33c.chunk.js": "/majoramassage/static/js/2.4eb7c33c.chunk.js",
+    "static/js/2.4eb7c33c.chunk.js.map": "/majoramassage/static/js/2.4eb7c33c.chunk.js.map",
+    "static/js/3.2a02e71c.chunk.js": "/majoramassage/static/js/3.2a02e71c.chunk.js",
+    "static/js/3.2a02e71c.chunk.js.map": "/majoramassage/static/js/3.2a02e71c.chunk.js.map",
+    "index.html": "/majoramassage/index.html",
+    "static/css/2.b00201c5.chunk.css.map": "/majoramassage/static/css/2.b00201c5.chunk.css.map",
+    "static/css/main.15bf7ee9.chunk.css.map": "/majoramassage/static/css/main.15bf7ee9.chunk.css.map",
+    "static/js/2.4eb7c33c.chunk.js.LICENSE.txt": "/majoramassage/static/js/2.4eb7c33c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f1721f15.js",
+    "static/css/2.b00201c5.chunk.css",
+    "static/js/2.4eb7c33c.chunk.js",
+    "static/css/main.15bf7ee9.chunk.css",
+    "static/js/main.bcc97b22.chunk.js"
+  ]
+}
