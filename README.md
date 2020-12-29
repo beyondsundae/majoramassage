@@ -10,7 +10,7 @@
 
 **(EN)** **Nong-Nuab-Naab.**  A web application that the user can book and go for a massage at a massage parlor (assume). After done massage user can review and give a rating. ( Booking - Pay - Get massage )
 
-## Features
+# Features
 **(TH)**
 -**สมัครสมาชิก**
 -**เข้าสู่ระบบ**
@@ -65,7 +65,7 @@
 	-  Chiropractor can change their age.
 	-  Chiropractor can Add/Sub massage list .
 
-## Future work
+# Future work
 **(TH)**
 - เปลี่ยนรหัสผ่านได้ในหน้าโปรไฟล์
 - Pagination/ Infinite Scroll สำหรับหน้าแรก
