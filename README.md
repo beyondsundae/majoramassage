@@ -17,26 +17,26 @@
 -**ลืมรหัสผ่าน**
 -**สามารถเข้าดูข้อมูลของน้องๆ ได้**
 
--**ฝั่งลูกค้า**
-|__ สามารถกดถูกใจ ( Favorite )
-|__ สามารถเข้าดูข้อมูลของน้องๆ ได้
-|__  สามารถกดเลือก วันที่ และ เวลา เพื่อจองนัดได้ ( ถ้าวันไหนน้องๆ มีคิวแล้วจะไม่สามารถเลือกได้ )
-|__ สามารถดูรายการการนัดได้ ( รายการที่ รอยืนยัน/ สำเร็จ /ยกเลิก )
-|__  สามารถยกเลิกการนัดได้
-|__ สามารถรีวิวหลังการใช้บริการเสร็จแล้วได้ ( ให้ดาว / แสดงความคิดเห็น )
-|__ สามารถดูคะแนนที่เคยรีวิวไปแล้วได้
-|__ สามารถเปลี่ยนรูปประจำตัวได้
-|__ สามารถเปลี่ยนชื่อได้
+- **ฝั่งลูกค้า**
+	- สามารถกดถูกใจ ( Favorite )
+	- สามารถเข้าดูข้อมูลของน้องๆ ได้
+	- สามารถกดเลือก วันที่ และ เวลา เพื่อจองนัดได้ ( ถ้าวันไหนน้องๆ มีคิวแล้วจะไม่สามารถเลือกได้ )
+	- สามารถดูรายการการนัดได้ ( รายการที่ รอยืนยัน/ สำเร็จ /ยกเลิก )
+	 - สามารถยกเลิกการนัดได้
+	- สามารถรีวิวหลังการใช้บริการเสร็จแล้วได้ ( ให้ดาว / แสดงความคิดเห็น )
+	- สามารถดูคะแนนที่เคยรีวิวไปแล้วได้
+	- สามารถเปลี่ยนรูปประจำตัวได้
+	- สามารถเปลี่ยนชื่อได้
 
--**ฝั่งน้องๆหมอนวด**
-|__ สามารถเข้าดูข้อมูลของน้องๆ ได้
-|__ สามารถดูรายการการนัดได้ ( รายการที่ รอยืนยัน/ สำเร็จ /ยกเลิก )
-|__ สามารถ ตกลง หรือ ยกเลิก การนัดได้
-|__ สามารถดูคะแนนที่ลูกค้าเคยรีวิวไปแล้วได้
-|__ สามารถเปลี่ยนรูปประจำตัวได้  
-|__ สามารถเปลี่ยนชื่อได้
-|__ สามารถเปลี่ยนอายุได้
-|__ สามารถเพิ่ม/ ลดรายการนวดได้
+- **ฝั่งน้องๆหมอนวด**
+	- สามารถเข้าดูข้อมูลของน้องๆ ได้
+	- สามารถดูรายการการนัดได้ ( รายการที่ รอยืนยัน/ สำเร็จ /ยกเลิก )
+	- สามารถ ตกลง หรือ ยกเลิก การนัดได้
+	- สามารถดูคะแนนที่ลูกค้าเคยรีวิวไปแล้วได้
+	- สามารถเปลี่ยนรูปประจำตัวได้  
+	- สามารถเปลี่ยนชื่อได้
+	- สามารถเปลี่ยนอายุได้
+	- สามารถเพิ่ม/ ลดรายการนวดได้
 
 **(EN)** 
 -**Register**
@@ -44,26 +44,26 @@
 -**Forgot Password**
 -**Chiropractor information**
 
--**Member customer side**
-|__ Like and Unlike Chiropator.
-|__ Click to see each chiropractor's information.
-|__ Pick Date and time to book. (  Option will disable if that date and time are already booked )  
-|__ User can see their own booking. ( Booking status: NotDone/ Done/ Reject )
-|__  User can cancel booking.
-|__ User can review and give a rating after done massage.
-|__ User can see their own reviews.
-|__ User can change profile picture.
-|__ User can change their name.
+- **Member customer side**
+	- Like and Unlike Chiropator.
+	- Click to see each chiropractor's information.
+	- Pick Date and time to book. (  Option will disable if that date and time are already booked )  
+	- User can see their own booking. ( Booking status: NotDone/ Done/ Reject )
+	-  User can cancel booking.
+	- User can review and give a rating after done massage.
+	- User can see their own reviews.
+	- User can change profile picture.
+	- User can change their name.
 
--**Chiropator side**
-|__ Click to see each chiropractor's information.
-|__ Chiropractor can see their own booking. ( Booking status: NotDone/ Done/ Reject )
-|__ Chiropractor can accept or cancel booking.
-|__ Chiropractor can see what member customer reviews to you. 
-|__ Chiropractor can change profile picture.
-|__ Chiropractor can change their name.
-|__  Chiropractor can change their age.
-|__  Chiropractor can Add/Sub massage list .
+- **Chiropator side**
+	- Click to see each chiropractor's information.
+	- Chiropractor can see their own booking. ( Booking status: NotDone/ Done/ Reject )
+	- Chiropractor can accept or cancel booking.
+	- Chiropractor can see what member customer reviews to you. 
+	- Chiropractor can change profile picture.
+	- Chiropractor can change their name.
+	-  Chiropractor can change their age.
+	-  Chiropractor can Add/Sub massage list .
 
 ## Future work
 **(TH)**
@@ -95,12 +95,12 @@
 
 
  - **React Hook**
-	 |___ useContext
+	- useContext
  - **Firebase**
-     |___ Authentication
-     |___Firestore
-     |___Storage
-     |___Hosting & Deploy 
+     - Authentication
+     - Firestore
+     - Storage
+     - Hosting & Deploy 
  - **React-Router**
  - **Deployment**
   ___
@@ -184,9 +184,10 @@
 **Figure 1.21** After logged out, favorite button disappear.
 
 # Demo
-[Vercel](https://majoramassage.vercel.app/)
-[Netlify](https://5fea14715f36e000080a7607--vigilant-kirch-c05bec.netlify.app/)
-[Firebase](https://majoramassage.web.app/)
+- **Hosting**
+	- [Vercel](https://majoramassage.vercel.app/)
+	- [Netlify](https://5fea14715f36e000080a7607--vigilant-kirch-c05bec.netlify.app/)
+	- [Firebase](https://majoramassage.web.app/)
 
 # How to use
 
